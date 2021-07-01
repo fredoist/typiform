@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom"
 
 function App() {
   const createId = () => Math.random().toString(36).substr(2, 9);
   const [formTitle, setFormTitle] = useState("");
   const [formBlocks, setFormBlocks] = useState([]);
   const [formId, setFormId] = useState(createId());
+  const history = useHistory();
 
   const handleKeyCommands = (e) => {
     if (e.keyCode === 13) {
@@ -105,7 +107,7 @@ function App() {
 
     fetch(import.meta.env.VITE_HARPERDB_URL, requestOptions)
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((result) => history.push(`/${formId}`))
       .catch((error) => console.log("error", error));
   }
 
