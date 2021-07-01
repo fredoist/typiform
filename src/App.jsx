@@ -75,6 +75,40 @@ function App() {
     return setFormBlocks(blocks);
   };
 
+  const publishForm = () => {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append(
+      "Authorization",
+      "Basic " + import.meta.env.VITE_HARPERDB_TOKEN
+    );
+
+    const raw = JSON.stringify({
+      operation: "insert",
+      schema: "test",
+      table: "forms",
+      records: [
+        {
+          id: formId,
+          title: formTitle,
+          blocks: formBlocks
+        },
+      ],
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(import.meta.env.VITE_HARPERDB_URL, requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  }
+
   return (
     <div id={formId}>
       <pre>
@@ -86,7 +120,7 @@ function App() {
           })}
         </code>
       </pre>
-      <button>Publish 💾</button>
+      <button onClick={publishForm}>Publish 💾</button>
       <main onKeyDown={handleKeyCommands}>
         <h1
           onInput={(e) => setFormTitle(e.target.textContent)}
