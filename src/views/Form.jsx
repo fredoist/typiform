@@ -29,19 +29,36 @@ function Form() {
 
     fetch(import.meta.env.VITE_HARPERDB_URL, requestOptions)
       .then((response) => response.text())
-      .then((result) => setFormData(JSON.parse(result)))
+      .then((result) => {
+        const data = JSON.parse(result);
+        setFormData(data);
+        const initialData = []
+        let i = 0;
+        data[0].blocks.forEach((block) => {
+          if(block.type !== "text_block") {
+            initialData[i] = {
+              id: block.id,
+              placeholder: block.placeholder,
+              value: ""
+            }
+            i++;
+          }
+        })
+        setUserData(initialData);
+      })
       .catch((error) => console.error("error", error));
   }, []);
 
   const handleInputChange = (e) => {
-    /**
-     * TODO: Add values to state so form can be submitted.
-     * [{
-     *  id: "inputid",
-     *  placeholder: "placeholder",
-     *  value: "value"
-     * }]
-     */
+    const target = e.target;
+    const data = [...userData];
+    const index = userData.findIndex(item => item.id === target.id);
+    data[index] = {
+      id: target.id,
+      placeholder: target.placeholder,
+      value: target.value
+    }
+    setUserData(data);
   };
 
   const handleSubmit = (e) => {
@@ -72,10 +89,10 @@ function Form() {
       redirect: "follow",
     };
 
-    // fetch(import.meta.env.VITE_HARPERDB_URL, requestOptions)
-    //   .then((response) => response.text())
-    //   .then((result) => console.log(result))
-    //   .catch((error) => console.log("error", error));
+    fetch(import.meta.env.VITE_HARPERDB_URL, requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
   };
 
   if (formData.length === 0) {
