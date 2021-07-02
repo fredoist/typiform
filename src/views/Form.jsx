@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 function Form() {
@@ -92,7 +92,10 @@ function Form() {
 
     fetch(import.meta.env.VITE_HARPERDB_URL, requestOptions)
       .then((response) => response.text())
-      .then((result) => console.log(result))
+      .then((result) => {
+        alert("You'r answers have been registered.");
+        location.reload();
+      })
       .catch((error) => console.log("error", error));
   };
 
