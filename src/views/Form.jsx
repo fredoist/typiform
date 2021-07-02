@@ -17,7 +17,7 @@ function Form() {
 
     var raw = JSON.stringify({
       operation: "sql",
-      sql: `SELECT * FROM test.forms WHERE id = '${id}'`,
+      sql: `SELECT * FROM foma.forms WHERE id = '${id}'`,
     });
 
     var requestOptions = {
@@ -73,8 +73,8 @@ function Form() {
 
     const raw = JSON.stringify({
       operation: "insert",
-      schema: "test",
-      table: "form_answers",
+      schema: "foma",
+      table: "answers",
       records: [
         {
           formId: id,

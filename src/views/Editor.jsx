@@ -110,7 +110,7 @@ function Editor() {
 
     const raw = JSON.stringify({
       operation: "insert",
-      schema: "test",
+      schema: "foma",
       table: "forms",
       records: [
         {

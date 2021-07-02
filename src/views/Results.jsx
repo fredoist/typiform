@@ -16,7 +16,7 @@ function Results() {
 
     var raw = JSON.stringify({
       operation: "sql",
-      sql: `SELECT * FROM test.form_answers WHERE formId = '${id}'`,
+      sql: `SELECT * FROM foma.answers WHERE formId = '${id}'`,
     });
 
     var requestOptions = {
