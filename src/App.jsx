@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import Editor from "./views/Editor";
 import Form from "./views/Form";
+import Results from "./views/Results";
 
 function App() {
   return (
@@ -13,8 +14,11 @@ function App() {
           <Route exact path="/">
             <Editor />
           </Route>
-          <Route path="/:id">
+          <Route exact path="/:id">
             <Form />
+          </Route>
+          <Route path="/:id/results">
+            <Results />
           </Route>
         </Switch>
       </Container>
