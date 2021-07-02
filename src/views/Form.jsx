@@ -32,18 +32,18 @@ function Form() {
       .then((result) => {
         const data = JSON.parse(result);
         setFormData(data);
-        const initialData = []
+        const initialData = [];
         let i = 0;
         data[0].blocks.forEach((block) => {
-          if(block.type !== "text_block") {
+          if (block.type !== "text_block") {
             initialData[i] = {
               id: block.id,
               placeholder: block.placeholder,
-              value: ""
-            }
+              value: "",
+            };
             i++;
           }
-        })
+        });
         setUserData(initialData);
       })
       .catch((error) => console.error("error", error));
@@ -52,12 +52,12 @@ function Form() {
   const handleChange = (e) => {
     const target = e.target;
     const data = [...userData];
-    const index = userData.findIndex(item => item.id === target.id);
+    const index = userData.findIndex((item) => item.id === target.id);
     data[index] = {
       id: target.id,
       placeholder: target.placeholder,
-      value: target.value
-    }
+      value: target.value,
+    };
     setUserData(data);
   };
 
@@ -167,6 +167,7 @@ const Input = styled.input`
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   font-size: 1em;
+  margin: 0.5rem 0 1rem 0;
   max-width: 350px;
   padding: 0.5rem;
   width: 100%;
@@ -184,6 +185,7 @@ const Textarea = styled.textarea`
   font-family: inherit;
   font-size: 1em;
   height: 80px;
+  margin: 0.5rem 0 1rem 0;
   max-width: 350px;
   padding: 0.5rem;
   width: 100%;
