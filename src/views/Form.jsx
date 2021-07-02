@@ -49,7 +49,7 @@ function Form() {
       .catch((error) => console.error("error", error));
   }, []);
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const target = e.target;
     const data = [...userData];
     const index = userData.findIndex(item => item.id === target.id);
@@ -63,6 +63,7 @@ function Form() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const data = userData;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append(
@@ -76,8 +77,8 @@ function Form() {
       table: "form_answers",
       records: [
         {
-          id: id,
-          formData: userData,
+          formId: id,
+          formData: data,
         },
       ],
     });
@@ -112,7 +113,7 @@ function Form() {
                 name={block.id}
                 id={block.id}
                 placeholder={block.placeholder}
-                onChange={handleInputChange}
+                onChange={handleChange}
                 required={true}
               />
             )}
@@ -123,7 +124,7 @@ function Form() {
                 placeholder={block.placeholder}
                 cols="30"
                 rows="10"
-                onChange={handleInputChange}
+                onChange={handleChange}
                 required={true}
               />
             )}
