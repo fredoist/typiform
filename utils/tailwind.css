@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .icon {
+    @apply w-4 h-4;
+  }
+  .btn {
+    @apply p-2 flex items-center gap-1 hover:bg-gray-100 rounded leading-none transition-colors;
+  }
+  .btn-primary {
+    @apply bg-red-500 hover:bg-red-600 text-white;
+  }
+}
