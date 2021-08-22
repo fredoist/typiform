@@ -10,7 +10,7 @@ const LabelSwitch = ({
   checked: boolean
   onChange: (value: boolean) => void
 }) => (
-  <label className="flex items-center justify-between py-2 px-4 hover:bg-gray-100 cursor-pointer">
+  <label className="flex items-center justify-between py-2 px-4 hover:bg-gray-100 cursor-pointer transition-colors">
     <span>{label}</span>
     <Switch
       checked={checked}
