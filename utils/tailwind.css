@@ -12,4 +12,10 @@
   .btn-primary {
     @apply bg-red-500 hover:bg-red-600 text-white;
   }
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2 bg-gray-100;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300;
+  }
 }

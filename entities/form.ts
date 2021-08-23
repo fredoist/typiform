@@ -21,9 +21,9 @@ export const formOptions = entity<{
 })
 
 export const formHeader = entity<{
-  icon: string | null
-  header: string | null
+  icon: string | ArrayBuffer | null
+  cover: string | ArrayBuffer | null
 }>({
   icon: null,
-  header: null,
+  cover: null,
 })
