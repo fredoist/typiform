@@ -9,7 +9,7 @@ const UploadBox = ({
 }: {
   id: string
   sizes?: string
-  onUpload: (value: string | ArrayBuffer | null) => void
+  onUpload: (value: string | undefined) => void
 }) => {
   const [isOver, setIsOver] = useState<boolean>(false)
 
@@ -37,7 +37,7 @@ const UploadBox = ({
         const files = dt.files
         const reader = new FileReader()
         reader.onloadend = function () {
-          onUpload(reader.result)
+          onUpload(reader.result?.toString())
           setIsOver(false)
         }
         reader.readAsDataURL(files[0])
@@ -52,7 +52,7 @@ const UploadBox = ({
           const files = e.target.files || []
           const reader = new FileReader()
           reader.onloadend = function () {
-            onUpload(reader.result)
+            onUpload(reader.result?.toString())
           }
           reader.readAsDataURL(files[0])
         }}

@@ -9,7 +9,7 @@ const UploadLinkForm = ({
   onSubmit,
 }: {
   id: string
-  onSubmit: (value: string) => void
+  onSubmit: (value: string | undefined) => void
 }) => {
   const {
     register,
@@ -19,7 +19,7 @@ const UploadLinkForm = ({
 
   return (
     <form
-      onSubmit={handleSubmit((data: FormData) => {
+      onSubmit={handleSubmit(async (data: FormData) => {
         onSubmit(data.link)
       })}
     >

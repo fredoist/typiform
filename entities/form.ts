@@ -16,14 +16,14 @@ export const formOptions = entity<{
   publicResponses: boolean
   lockedResponses: boolean
 }>({
-  publicResponses: true,
+  publicResponses: false,
   lockedResponses: false,
 })
 
 export const formHeader = entity<{
-  icon: string | ArrayBuffer | null
-  cover: string | ArrayBuffer | null
+  icon: string | undefined
+  cover: string | undefined
 }>({
-  icon: null,
-  cover: null,
+  icon: undefined,
+  cover: undefined,
 })

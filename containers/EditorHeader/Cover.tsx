@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import Image from 'next/image'
 import cx from 'classnames'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import { Popover, Tab, Transition } from '@headlessui/react'
 import {
   PhotographIcon,
@@ -11,19 +12,24 @@ import {
 
 import { UploadBox } from 'components/UploadBox'
 import { UploadLinkForm } from 'components/UploadLinkForm'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import { formHeader } from 'entities/form'
 
 const EditorCover = () => {
+  const cover = formHeader.use((state) => state.cover)
+
   return (
     <div className="relative">
       <div className="relative w-full h-32 lg:h-56 overflow-hidden">
-        <Image
-          alt="Cover"
-          src="https://images.unsplash.com/photo-1629649439562-4c682cd0c0d4"
-          layout="fill"
-          objectFit="cover"
-          objectPosition="center"
-        />
+        {cover && (
+          <Image
+            alt="Cover"
+            src={cover}
+            loader={({ src }) => src}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+          />
+        )}
       </div>
       <Popover className="relative mx-auto max-w-2xl z-10">
         <Popover.Button className="absolute right-2 bottom-2 p-2 text-xs font-medium bg-white hover:bg-gray-100 rounded shadow leading-none">
@@ -68,7 +74,17 @@ const EditorCover = () => {
                     <SparklesIcon className="icon text-gray-500" />
                     <span className="sr-only lg:not-sr-only">Random</span>
                   </button>
-                  <button className="btn">Remove</button>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      formHeader.set((state) => ({
+                        ...state,
+                        cover: undefined,
+                      }))
+                    }}
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
               <Tab.Panels className="p-2">
@@ -76,11 +92,18 @@ const EditorCover = () => {
                   <UploadBox
                     id="cover-upload"
                     sizes="1480x1020"
-                    onUpload={(value) => {}}
+                    onUpload={(value) => {
+                      formHeader.set((state) => ({ ...state, cover: value }))
+                    }}
                   />
                 </Tab.Panel>
                 <Tab.Panel>
-                  <UploadLinkForm id="cover-link" onSubmit={(value) => {}} />
+                  <UploadLinkForm
+                    id="cover-link"
+                    onSubmit={(value) => {
+                      formHeader.set((state) => ({ ...state, cover: value }))
+                    }}
+                  />
                 </Tab.Panel>
                 <Tab.Panel>
                   <div>
