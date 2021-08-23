@@ -4,11 +4,9 @@ import { PhotographIcon } from '@heroicons/react/outline'
 
 const UploadBox = ({
   id,
-  sizes,
   onUpload,
 }: {
   id: string
-  sizes?: string
   onUpload: (value: string | undefined) => void
 }) => {
   const [isOver, setIsOver] = useState<boolean>(false)
@@ -59,11 +57,7 @@ const UploadBox = ({
       />
       <PhotographIcon className="w-6 h-6 text-gray-500" />
       <span className="text-sm">Drag and drop an image or click to select</span>
-      {sizes && (
-        <span className="text-gray-400 text-sm">
-          Recomended size {sizes} pixels
-        </span>
-      )}
+      <span className="text-gray-400 text-sm">Upload a high quality image</span>
     </label>
   )
 }

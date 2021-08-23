@@ -23,7 +23,7 @@ const EditorIcon = () => {
           <Image
             src={icon}
             alt="Icon"
-            loader={({ src }) => src}
+            unoptimized={true}
             width={128}
             height={128}
           />
@@ -74,7 +74,6 @@ const EditorIcon = () => {
               <Tab.Panel>
                 <UploadBox
                   id="icon-upload"
-                  sizes="128x128"
                   onUpload={(value) => {
                     formHeader.set((state) => ({ ...state, icon: value }))
                   }}

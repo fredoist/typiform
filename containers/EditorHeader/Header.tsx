@@ -4,23 +4,21 @@ import { EmojiHappyIcon, PhotographIcon } from '@heroicons/react/outline'
 
 import { EditorIcon as Icon } from './Icon'
 import { EditorCover as Cover } from './Cover'
-import { formHeader, formTitle } from 'entities/form'
+import { formHeader, formStyle, formTitle } from 'entities/form'
 
 const EditorHeader = () => {
   const title = formTitle.use()
   const header = formHeader.use()
-  const [showPlaceholder, setShowPlaceholder] = useState<boolean>(false)
-
-  useEffect(() => {
-    title !== null || title !== ''
-      ? setShowPlaceholder(false)
-      : setShowPlaceholder(true)
-  }, [title])
+  const style = formStyle.use()
 
   return (
     <header className="relative group">
       {header.cover && <Cover />}
-      <div className="mx-auto max-w-2xl px-2">
+      <div
+        className={cx('mx-auto max-w-2xl px-2', {
+          'max-w-7xl': style.fullWidth,
+        })}
+      >
         <div
           className={cx({ 'h-8 md:h-12 lg:h-16': header.cover && header.icon })}
         >
@@ -41,13 +39,14 @@ const EditorHeader = () => {
           {!header.cover && (
             <button
               className="btn"
-              onClick={() =>
+              onClick={async () => {
+                const request = await fetch('/api/unsplash/random')
+                const response = await request.json()
                 formHeader.set((state) => ({
                   ...state,
-                  cover:
-                    'https://images.unsplash.com/photo-1629649439562-4c682cd0c0d4',
+                  cover: response.urls.full,
                 }))
-              }
+              }}
             >
               <PhotographIcon className="icon" />
               <span>Add cover</span>
@@ -59,17 +58,16 @@ const EditorHeader = () => {
           suppressContentEditableWarning
           placeholder="Form title"
           className={cx(
+            style.fontStyle,
             'mt-2 mb-6 text-2xl lg:text-3xl font-bold leading-none focus:outline-none',
-            { 'with-placeholder': showPlaceholder }
+            { 'with-placeholder': !title }
           )}
           onInput={(e) => {
             const target = e.target as HTMLHeadingElement
             const content = target.textContent
             if (content !== '') {
-              setShowPlaceholder(false)
               formTitle.set(content)
             } else {
-              setShowPlaceholder(true)
               formTitle.set(null)
             }
           }}

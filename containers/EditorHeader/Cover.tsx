@@ -12,8 +12,7 @@ import {
 
 import { UploadBox } from 'components/UploadBox'
 import { UploadLinkForm } from 'components/UploadLinkForm'
-import { formHeader } from 'entities/form'
-import { useEffect } from 'react'
+import { formHeader, formStyle } from 'entities/form'
 
 interface searchResults {
   total: number
@@ -28,6 +27,7 @@ interface searchResults {
 
 const EditorCover = () => {
   const cover = formHeader.use((state) => state.cover)
+  const style = formStyle.use()
   // Unsplash Search Infinite Scroll
   const [query, setQuery] = useState<string | null>(null)
   const [searchPage, setSearchPage] = useState<number>(1)
@@ -37,23 +37,38 @@ const EditorCover = () => {
     results: [],
   })
 
-  useEffect(() => console.log(searchResults), [searchResults])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   return (
     <div className="relative">
-      <div className="relative w-full h-32 lg:h-56 overflow-hidden">
+      <div
+        className={cx(
+          'relative w-full h-32 lg:h-56 overflow-hidden pointer-events-none',
+          {
+            'animate-pulse': isLoading,
+          }
+        )}
+      >
         {cover && (
           <Image
             alt="Cover"
             src={cover}
-            loader={({ src }) => src}
+            unoptimized={true}
             layout="fill"
             objectFit="cover"
             objectPosition="center"
+            className="w-full h-full object-center object-cover"
+            onLoadingComplete={() => {
+              setIsLoading(false)
+            }}
           />
         )}
       </div>
-      <Popover className="relative mx-auto max-w-2xl z-10">
+      <Popover
+        className={cx('relative mx-auto max-w-2xl z-10', {
+          'max-w-7xl': style.fullWidth,
+        })}
+      >
         <Popover.Button className="absolute right-2 bottom-2 p-2 text-xs font-medium bg-white hover:bg-gray-100 rounded shadow leading-none">
           Change cover
         </Popover.Button>
@@ -81,7 +96,7 @@ const EditorCover = () => {
                           {tab === 'Unsplash' && (
                             <PhotographIcon
                               className={cx('icon text-gray-500', {
-                                'text-red-500': selected,
+                                '!text-red-500': selected,
                               })}
                             />
                           )}
@@ -92,8 +107,26 @@ const EditorCover = () => {
                   ))}
                 </Tab.List>
                 <div className="flex gap-1">
-                  <button className="btn">
-                    <SparklesIcon className="icon text-gray-500" />
+                  <button
+                    className="btn"
+                    onClick={async () => {
+                      const request = await fetch('/api/unsplash/random')
+                      const response = await request.json()
+                      formHeader.set((prev) => ({
+                        ...prev,
+                        cover: response.urls.full,
+                      }))
+                      setIsLoading(true)
+                    }}
+                  >
+                    {isLoading ? (
+                      <RefreshIcon
+                        className="icon text-gray-500 animate-spin"
+                        style={{ animationDirection: 'reverse' }}
+                      />
+                    ) : (
+                      <SparklesIcon className="icon text-gray-500" />
+                    )}
                     <span className="sr-only lg:not-sr-only">Random</span>
                   </button>
                   <button
@@ -113,7 +146,6 @@ const EditorCover = () => {
                 <Tab.Panel>
                   <UploadBox
                     id="cover-upload"
-                    sizes="1480x1020"
                     onUpload={(value) => {
                       formHeader.set((state) => ({ ...state, cover: value }))
                     }}
@@ -205,12 +237,18 @@ const EditorCover = () => {
                           ({ id, urls, description, user }) => (
                             <div key={id}>
                               <button
-                                className="relative w-full h-16 bg-gray-50 rounded overflow-hidden"
+                                className={cx(
+                                  'relative w-full h-16 bg-gray-50 rounded overflow-hidden',
+                                  { 'opacity-50': isLoading }
+                                )}
+                                disabled={isLoading}
                                 onClick={() => {
+                                  if (isLoading) return
                                   formHeader.set((state) => ({
                                     ...state,
                                     cover: urls.full,
                                   }))
+                                  setIsLoading(true)
                                 }}
                               >
                                 <Image
