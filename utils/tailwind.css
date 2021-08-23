@@ -21,4 +21,7 @@
   .with-placeholder {
     @apply before:content-[attr(placeholder)] before:text-gray-400 before:cursor-text;
   }
+  .draggable-block-line {
+    @apply border-b-2 border-blue-300;
+  }
 }
