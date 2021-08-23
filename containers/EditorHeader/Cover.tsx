@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import Image from 'next/image'
 import cx from 'classnames'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -13,9 +13,31 @@ import {
 import { UploadBox } from 'components/UploadBox'
 import { UploadLinkForm } from 'components/UploadLinkForm'
 import { formHeader } from 'entities/form'
+import { useEffect } from 'react'
+
+interface searchResults {
+  total: number
+  total_pages: number
+  results: {
+    id: string
+    description: string
+    user: { name: string; links: { html: string } }
+    urls: { thumb: string; full: string }
+  }[]
+}
 
 const EditorCover = () => {
   const cover = formHeader.use((state) => state.cover)
+  // Unsplash Search Infinite Scroll
+  const [query, setQuery] = useState<string | null>(null)
+  const [searchPage, setSearchPage] = useState<number>(1)
+  const [searchResults, setSearchResults] = useState<searchResults>({
+    total: 0,
+    total_pages: 0,
+    results: [],
+  })
+
+  useEffect(() => console.log(searchResults), [searchResults])
 
   return (
     <div className="relative">
@@ -107,13 +129,29 @@ const EditorCover = () => {
                 </Tab.Panel>
                 <Tab.Panel>
                   <div>
-                    <form className="relative">
+                    <form
+                      className="relative"
+                      onSubmit={async (e) => {
+                        e.preventDefault()
+                        const form = e.target as HTMLFormElement
+                        const query = form.elements.namedItem(
+                          'query'
+                        ) as HTMLInputElement
+                        setQuery(query.value)
+                        const request = await fetch(
+                          `/api/unsplash/search?query=${query.value}&page=${searchPage}`
+                        )
+                        const response = await request.json()
+                        setSearchResults(response)
+                        setSearchPage((prev) => prev + 1)
+                      }}
+                    >
                       <label htmlFor="search-query">
                         <SearchIcon className="icon absolute left-3 top-3 cursor-text" />
                         <input
                           type="search"
-                          name="search-query"
-                          id="search-query"
+                          name="query"
+                          id="query"
                           placeholder="Type in to search"
                           required={true}
                           className="block w-full py-2 pl-9 pr-16 border border-gray-200 rounded focus:outline-none focus:border-gray-300 focus:ring-2 focus:ring-black/5"
@@ -137,40 +175,66 @@ const EditorCover = () => {
                         Unsplash
                       </a>
                     </span>
-                    <div className="grid grid-cols-3 gap-2 mt-4 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+                    <div
+                      id="search-results"
+                      className="mt-4 max-h-60 overflow-y-auto custom-scrollbar pr-1"
+                    >
                       <InfiniteScroll
-                        hasMore={true}
-                        dataLength={12}
+                        hasMore={searchPage < searchResults.total_pages}
+                        dataLength={searchResults.results.length}
+                        scrollableTarget="search-results"
+                        className="grid grid-cols-3 gap-2"
                         loader={
-                          <RefreshIcon
-                            className="icon text-gray-400 motion-safe:animate-spin"
-                            style={{ animationDirection: 'reverse' }}
-                          />
+                          <div className="relative w-full h-16 bg-gray-300 rounded overflow-hidden animate-pulse" />
                         }
-                        next={() => {}}
+                        next={async () => {
+                          const request = await fetch(
+                            `/api/unsplash/search?query=${query}&page=${searchPage}`
+                          )
+                          const response = await request.json()
+                          setSearchResults((prev) => {
+                            return {
+                              ...prev,
+                              results: [...prev.results, ...response.results],
+                            }
+                          })
+                          setSearchPage((prev) => prev + 1)
+                        }}
                       >
-                        <div>
-                          <button className="relative w-full h-16 bg-gray-50 rounded overflow-hidden">
-                            <Image
-                              src="https://images.unsplash.com/photo-1629649439562-4c682cd0c0d4"
-                              alt="Photo"
-                              layout="fill"
-                              objectFit="cover"
-                              objectPosition="center"
-                            />
-                          </button>
-                          <span className="block truncate text-xs text-gray-400">
-                            by{' '}
-                            <a
-                              href="https://?utm_source=referral&utm_medium=typiform"
-                              target="_blank"
-                              rel="noreferrer"
-                              className="underline"
-                            >
-                              John Doe Ackerman
-                            </a>
-                          </span>
-                        </div>
+                        {searchResults.results.map(
+                          ({ id, urls, description, user }) => (
+                            <div key={id}>
+                              <button
+                                className="relative w-full h-16 bg-gray-50 rounded overflow-hidden"
+                                onClick={() => {
+                                  formHeader.set((state) => ({
+                                    ...state,
+                                    cover: urls.full,
+                                  }))
+                                }}
+                              >
+                                <Image
+                                  src={urls.thumb}
+                                  unoptimized={true}
+                                  alt={description}
+                                  layout="fill"
+                                  className="w-full h-full object-cover object-center"
+                                />
+                              </button>
+                              <span className="block truncate text-xs text-gray-400">
+                                by{' '}
+                                <a
+                                  href={`${user.links.html}?utm_source=referral&utm_medium=typiform`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="underline"
+                                >
+                                  {user.name}
+                                </a>
+                              </span>
+                            </div>
+                          )
+                        )}
                       </InfiniteScroll>
                     </div>
                   </div>
