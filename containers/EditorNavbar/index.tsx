@@ -35,7 +35,7 @@ const EditorNavbar = () => {
         <Image
           src={header.icon}
           alt="Icon"
-          loader={({ src }) => src}
+          unoptimized={true}
           width={20}
           height={20}
           className="rounded-sm overflow-hidden"
