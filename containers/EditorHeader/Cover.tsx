@@ -199,7 +199,7 @@ const EditorCover = () => {
                     <span className="block mt-2 text-xs text-gray-400">
                       Photos by{' '}
                       <a
-                        href="https://unsplash.com?utm_source=referral&utm_medium=typiform"
+                        href="https://unsplash.com?utm_source=typiform&utm_medium=referral"
                         target="_blank"
                         rel="noreferrer"
                         className="underline"
@@ -242,13 +242,16 @@ const EditorCover = () => {
                                   { 'opacity-50': isLoading }
                                 )}
                                 disabled={isLoading}
-                                onClick={() => {
+                                onClick={async () => {
                                   if (isLoading) return
                                   formHeader.set((state) => ({
                                     ...state,
                                     cover: urls.full,
                                   }))
                                   setIsLoading(true)
+                                  // send track photo download request when the
+                                  // user choose a photo as cover image
+                                  await fetch(`/api/unsplash/${id}/download`)
                                 }}
                               >
                                 <Image
@@ -262,7 +265,7 @@ const EditorCover = () => {
                               <span className="block truncate text-xs text-gray-400">
                                 by{' '}
                                 <a
-                                  href={`${user.links.html}?utm_source=referral&utm_medium=typiform`}
+                                  href={`${user.links.html}?utm_source=typiform&utm_medium=referral`}
                                   target="_blank"
                                   rel="noreferrer"
                                   className="underline"
