@@ -43,7 +43,7 @@ const EditorCover = () => {
     <div className="relative">
       <div
         className={cx(
-          'relative w-full h-32 lg:h-56 overflow-hidden pointer-events-none',
+          'relative w-full h-32 lg:h-56 overflow-hidden pointer-events-none bg-gray-100',
           {
             'animate-pulse': isLoading,
           }

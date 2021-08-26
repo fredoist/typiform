@@ -7,7 +7,6 @@ import { EditorCover as Cover } from './Cover'
 import { formHeader, formStyle, formTitle } from 'entities/form'
 
 const EditorHeader = () => {
-  const title = formTitle.use()
   const header = formHeader.use()
   const style = formStyle.use()
 
@@ -53,25 +52,6 @@ const EditorHeader = () => {
             </button>
           )}
         </div>
-        <h1
-          contentEditable
-          suppressContentEditableWarning
-          placeholder="Form title"
-          className={cx(
-            style.fontStyle,
-            'mt-2 mb-6 text-2xl lg:text-3xl font-bold leading-none focus:outline-none',
-            { 'with-placeholder': !title }
-          )}
-          onInput={(e) => {
-            const target = e.target as HTMLHeadingElement
-            const content = target.textContent
-            if (content !== '') {
-              formTitle.set(content)
-            } else {
-              formTitle.set(null)
-            }
-          }}
-        ></h1>
       </div>
     </header>
   )
