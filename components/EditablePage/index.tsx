@@ -2,10 +2,10 @@ import * as React from 'react'
 import cx from 'classnames'
 import ReactDragListView from 'react-drag-listview'
 
-import { formStyle, formTitle, formBlocks } from 'entities/form'
+import { formStyle, formTitle, formBlocks } from 'lib/entities/form'
 import { EditableBlock } from 'components/EditableBlock'
-import { createID } from 'utils/createID'
-import { Block } from 'interfaces/Block'
+import { createID } from 'lib/utils/createID'
+import { Block } from 'lib/interfaces/Block'
 
 const EditablePage = () => {
   const title = formTitle.use()

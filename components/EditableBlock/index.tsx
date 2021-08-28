@@ -10,8 +10,8 @@ import {
   TrashIcon,
   ViewGridIcon,
 } from '@heroicons/react/outline'
-import { formBlocks } from 'entities/form'
-import { Block } from 'interfaces/Block'
+import { formBlocks } from 'lib/entities/form'
+import { Block } from 'lib/interfaces/Block'
 
 const blockOptions = [
   {

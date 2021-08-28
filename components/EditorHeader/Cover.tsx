@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import * as React from 'react'
 import Image from 'next/image'
 import cx from 'classnames'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -12,7 +12,7 @@ import {
 
 import { UploadBox } from 'components/UploadBox'
 import { UploadLinkForm } from 'components/UploadLinkForm'
-import { formHeader, formStyle } from 'entities/form'
+import { formHeader, formStyle } from 'lib/entities/form'
 
 interface searchResults {
   total: number
@@ -29,15 +29,15 @@ const EditorCover = () => {
   const cover = formHeader.use((state) => state.cover)
   const style = formStyle.use()
   // Unsplash Search Infinite Scroll
-  const [query, setQuery] = useState<string | null>(null)
-  const [searchPage, setSearchPage] = useState<number>(1)
-  const [searchResults, setSearchResults] = useState<searchResults>({
+  const [query, setQuery] = React.useState<string | null>(null)
+  const [searchPage, setSearchPage] = React.useState<number>(1)
+  const [searchResults, setSearchResults] = React.useState<searchResults>({
     total: 0,
     total_pages: 0,
     results: [],
   })
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
   return (
     <div className="relative">
@@ -73,7 +73,7 @@ const EditorCover = () => {
           Change cover
         </Popover.Button>
         <Transition
-          as={Fragment}
+          as={React.Fragment}
           enter="transition duration-200"
           enterFrom="opacity-0 scale-95"
           enterTo="opacity-100 scale-100"
@@ -86,7 +86,7 @@ const EditorCover = () => {
               <div className="flex items-center justify-between text-sm">
                 <Tab.List className="flex gap-1">
                   {['Upload', 'Link', 'Unsplash'].map((tab) => (
-                    <Tab as={Fragment} key={tab}>
+                    <Tab as={React.Fragment} key={tab}>
                       {({ selected }) => (
                         <button
                           className={cx('btn', {

@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import * as React from 'react'
 import Image from 'next/image'
 import cx from 'classnames'
 import { Popover, RadioGroup, Transition } from '@headlessui/react'
@@ -11,7 +11,12 @@ import {
 } from '@heroicons/react/outline'
 
 import { LabelSwitch } from 'components/LabelSwitch'
-import { formHeader, formOptions, formStyle, formTitle } from 'entities/form'
+import {
+  formHeader,
+  formOptions,
+  formStyle,
+  formTitle,
+} from 'lib/entities/form'
 
 const fontStyles = [
   { label: 'Default', class: 'font-sans' },
@@ -48,7 +53,7 @@ const EditorNavbar = () => {
           <DotsHorizontalIcon className="icon" />
         </Popover.Button>
         <Transition
-          as={Fragment}
+          as={React.Fragment}
           enter="transition duration-200"
           enterFrom="opacity-0 scale-95"
           enterTo="opacity-100 scale-100"
@@ -77,7 +82,7 @@ const EditorNavbar = () => {
                   )}
                 >
                   {({ checked }) => (
-                    <Fragment>
+                    <React.Fragment>
                       <h5
                         aria-hidden="true"
                         className={cx({
@@ -90,7 +95,7 @@ const EditorNavbar = () => {
                       <span className="text-sm text-gray-400">
                         {font.label}
                       </span>
-                    </Fragment>
+                    </React.Fragment>
                   )}
                 </RadioGroup.Option>
               ))}

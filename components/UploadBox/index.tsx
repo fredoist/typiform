@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import * as React from 'react'
 import cx from 'classnames'
 import { PhotographIcon } from '@heroicons/react/outline'
 
@@ -9,7 +9,7 @@ const UploadBox = ({
   id: string
   onUpload: (value: string | undefined) => void
 }) => {
-  const [isOver, setIsOver] = useState<boolean>(false)
+  const [isOver, setIsOver] = React.useState<boolean>(false)
 
   return (
     <label

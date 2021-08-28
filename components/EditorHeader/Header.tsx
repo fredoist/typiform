@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { EmojiHappyIcon, PhotographIcon } from '@heroicons/react/outline'
 
 import { EditorIcon as Icon } from './Icon'
 import { EditorCover as Cover } from './Cover'
-import { formHeader, formStyle, formTitle } from 'entities/form'
+import { formHeader, formStyle, formTitle } from 'lib/entities/form'
 
 const EditorHeader = () => {
   const header = formHeader.use()

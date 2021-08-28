@@ -1,4 +1,4 @@
-import { Block } from 'interfaces/Block'
+import { Block } from 'lib/interfaces/Block'
 import { entity } from 'simpler-state'
 
 export const formTitle = entity<string | null>(null)

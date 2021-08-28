@@ -1,11 +1,11 @@
-import { Fragment } from 'react'
+import * as React from 'react'
 import Image from 'next/image'
 import cx from 'classnames'
 import { Popover, Tab, Transition } from '@headlessui/react'
 
 import { UploadBox } from 'components/UploadBox'
 import { UploadLinkForm } from 'components/UploadLinkForm'
-import { formHeader } from 'entities/form'
+import { formHeader } from 'lib/entities/form'
 
 const EditorIcon = () => {
   const icon = formHeader.use((state) => state.icon)
@@ -30,7 +30,7 @@ const EditorIcon = () => {
         )}
       </Popover.Button>
       <Transition
-        as={Fragment}
+        as={React.Fragment}
         enter="transition duration-200"
         enterFrom="opacity-0 scale-95"
         enterTo="opacity-100 scale-100"
@@ -48,7 +48,7 @@ const EditorIcon = () => {
             <div className="flex items-center justify-between text-sm">
               <Tab.List className="flex gap-1">
                 {['Upload', 'Link'].map((tab) => (
-                  <Tab as={Fragment} key={tab}>
+                  <Tab as={React.Fragment} key={tab}>
                     {({ selected }) => (
                       <button
                         className={cx('btn', {

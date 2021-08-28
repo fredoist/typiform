@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 
-import { EditorNavbar } from 'containers/EditorNavbar'
-import { EditorHeader } from 'containers/EditorHeader'
-import { formHeader, formTitle } from 'entities/form'
-import { EditablePage } from 'containers/EditablePage'
+import { EditorNavbar } from 'components/EditorNavbar'
+import { EditorHeader } from 'components/EditorHeader'
+import { formHeader, formTitle } from 'lib/entities/form'
+import { EditablePage } from 'components/EditablePage'
 
 const CreatePage: NextPage = () => {
   const title = formTitle.use()
