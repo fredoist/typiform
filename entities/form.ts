@@ -1,3 +1,4 @@
+import { Block } from 'interfaces/Block'
 import { entity } from 'simpler-state'
 
 export const formTitle = entity<string | null>(null)
@@ -27,3 +28,5 @@ export const formHeader = entity<{
   icon: undefined,
   cover: undefined,
 })
+
+export const formBlocks = entity<Block[]>([])

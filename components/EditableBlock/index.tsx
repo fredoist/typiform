@@ -1,12 +1,4 @@
-import {
-  Fragment,
-  useEffect,
-  useState,
-  useRef,
-  createRef,
-  RefObject,
-  LegacyRef,
-} from 'react'
+import * as React from 'react'
 import cx from 'classnames'
 import { Menu, Transition } from '@headlessui/react'
 import {
@@ -18,69 +10,64 @@ import {
   TrashIcon,
   ViewGridIcon,
 } from '@heroicons/react/outline'
-
-const Icons = {
-  AtSymbolIcon,
-  MenuAlt3Icon,
-  MenuAlt4Icon,
-}
+import { formBlocks } from 'entities/form'
+import { Block } from 'interfaces/Block'
 
 const blockOptions = [
   {
-    id: 1,
+    id: 'short-answer',
     label: 'Short answer',
+    tag: 'input',
+    hint: 'Enter a placeholder',
     icon: 'MenuAlt3Icon',
-    properties: {
-      tag: 'p',
-      class: '',
+    props: {
+      className: 'border-2 border-red-500',
       placeholder: '',
       value: '',
     },
   },
   {
-    id: 2,
+    id: 'long-answer',
     label: 'Long answer',
     icon: 'MenuAlt4Icon',
-    properties: {
-      tag: 'p',
-      class: '',
+    tag: 'input',
+    hint: 'Enter a placeholder',
+    props: {
+      className: 'border-2 border-green-600',
       placeholder: '',
       value: '',
     },
   },
   {
-    id: 3,
+    id: 'email-address',
     label: 'Email address',
     icon: 'AtSymbolIcon',
-    properties: {
-      tag: 'p',
-      class: '',
+    tag: 'input',
+    hint: 'Enter a placeholder',
+    props: {
+      className: 'border-2 border-yellow-400',
       placeholder: '',
       value: '',
     },
   },
 ]
 
-const EditableBlock = () => {
-  const [LIIndex, setLIIndex] = useState<number>(0)
-  const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true)
-  const [showBlockSelect, setShowBlockSelect] = useState<boolean>(false)
-  const [options, setOptions] = useState<
-    {
-      id: number
-      label: string
-      icon: string
-      properties: {
-        tag: string
-        class: string
-        placeholder: string
-        value: string
-      }
-    }[]
-  >(blockOptions)
+const EditableBlock = ({
+  setIsCommand,
+  block,
+}: {
+  setIsCommand: any
+  block: Block
+}) => {
+  const [LIIndex, setLIIndex] = React.useState<number>(0)
+  const ULRef = React.useRef<any>(null)
+  const [showPlaceholder, setShowPlaceholder] = React.useState<boolean>(true)
+  const [showBlockSelect, setShowBlockSelect] = React.useState<boolean>(false)
+  const [options, setOptions] = React.useState<Block[]>(blockOptions)
 
-  useEffect(() => {
+  React.useEffect(() => {
     let selectedBlock = 0
+    setIsCommand(showBlockSelect)
     function handleKeyboardEvents(e: KeyboardEvent) {
       if (showBlockSelect) {
         if (
@@ -129,6 +116,12 @@ const EditableBlock = () => {
             case 'Enter':
               e.preventDefault()
               e.stopPropagation()
+              formBlocks.set((prev) => {
+                const next = [...prev]
+                const i = next.findIndex((e) => e.blockID === block.blockID)
+                next[i] = { ...block, ...options[selectedBlock] }
+                return next
+              })
               setShowBlockSelect(false)
               break
             case 'Escape':
@@ -146,20 +139,30 @@ const EditableBlock = () => {
     }
     window.addEventListener('keydown', handleKeyboardEvents)
     return () => window.removeEventListener('keydown', handleKeyboardEvents)
-  }, [showBlockSelect, options])
+  }, [showBlockSelect, options, setIsCommand, block])
+
+  React.useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ULRef && !ULRef.current.contains(e.target)) {
+        setShowBlockSelect(false)
+      }
+    }
+    window.addEventListener('mousedown', handleClickOutside)
+    return () => window.removeEventListener('mousedown', handleClickOutside)
+  }, [ULRef])
 
   return (
     <div className="relative group draggable-block">
       <div className="absolute -left-2 top-0 -translate-x-full flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity font-sans">
-        <button className="btn">
+        <button tabIndex={-1} className="btn">
           <PlusIcon className="icon text-gray-500" />
         </button>
         <Menu as="div" className="relative">
-          <Menu.Button className="btn">
+          <Menu.Button tabIndex={-1} className="btn draggable-block-button">
             <ViewGridIcon className="icon text-gray-500" />
           </Menu.Button>
           <Transition
-            as={Fragment}
+            as={React.Fragment}
             enter="transition duration-200"
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"
@@ -198,66 +201,94 @@ const EditableBlock = () => {
           </Transition>
         </Menu>
       </div>
-      <div
-        placeholder="Type '/' to add a block element"
-        className={cx('py-1 my-2 focus:outline-none', {
-          'with-placeholder': showPlaceholder,
-        })}
-        onInput={(e) => {
-          const target = e.target as HTMLDivElement
-          const content = target.textContent
-          if (content !== '') {
-            setShowPlaceholder(false)
-            if (content?.indexOf('/') === 0) {
-              setShowBlockSelect(true)
-              const blockFilter = content.split('/')[1]
-              setOptions(
-                blockOptions.filter((option) =>
-                  option.label.toLowerCase().includes(blockFilter.toLowerCase())
+      {React.createElement(
+        'div',
+        {
+          id: block.blockID,
+          placeholder: block.hint,
+          contentEditable: true,
+          className: cx(block.props.className, 'focus:outline-none', {
+            'with-placeholder': showPlaceholder,
+          }),
+          suppressContentEditableWarning: true,
+          onInput: (e: InputEvent) => {
+            const target = e.target as HTMLDivElement
+            const content = target.textContent
+            if (content !== '') {
+              setShowPlaceholder(false)
+              if (content?.indexOf('/') === 0) {
+                setShowBlockSelect(true)
+                const blockFilter = content.split('/')[1]
+                setOptions(
+                  blockOptions.filter((option) =>
+                    option.label
+                      .toLowerCase()
+                      .includes(blockFilter.toLowerCase())
+                  )
                 )
-              )
+              } else {
+                formBlocks.set((prev) => {
+                  const next = [...prev]
+                  const i = next.findIndex((e) => e.blockID === block.blockID)
+                  next[i] = {
+                    ...block,
+                    props: { ...block.props, value: content },
+                  }
+                  return next
+                })
+              }
+            } else {
+              setShowPlaceholder(true)
+              setShowBlockSelect(false)
             }
-          } else {
-            setShowPlaceholder(true)
-            setShowBlockSelect(false)
-          }
-        }}
-        contentEditable
-        suppressContentEditableWarning
-      />
-      <Transition
-        show={showBlockSelect}
-        as={Fragment}
-        enter="transition duration-200"
-        enterFrom="opacity-0 scale-95"
-        enterTo="opacity-100 scale-100"
-        leave="transition duration-95"
-        leaveFrom="opacity-100 scale-100"
-        leaveTo="opacity-0 scale-95"
-      >
-        <ul
-          tabIndex={0}
-          className="absolute left-0 w-60 max-h-60 overflow-y-auto custom-scrollbar py-2 bg-white shadow-lg ring-1 ring-black/5 rounded font-sans"
+          },
+        },
+        null
+      )}
+      <div ref={ULRef}>
+        <Transition
+          show={showBlockSelect}
+          as={React.Fragment}
+          enter="transition duration-200"
+          enterFrom="opacity-0 scale-95"
+          enterTo="opacity-100 scale-100"
+          leave="transition duration-95"
+          leaveFrom="opacity-100 scale-100"
+          leaveTo="opacity-0 scale-95"
         >
-          {options.map((option, key) => {
-            const { [option.icon]: Icon }: any = Icons
-            return (
-              <li
-                key={key}
-                tabIndex={-1}
-                className={cx(
-                  'flex items-center gap-4 w-full py-2 px-4 hover:bg-gray-100',
-                  { 'bg-gray-100': LIIndex === key }
-                )}
-                onClick={() => console.log(option.label)}
-              >
-                <Icon className="icon" />
-                <span>{option.label}</span>
-              </li>
-            )
-          })}
-        </ul>
-      </Transition>
+          <ul
+            tabIndex={0}
+            className="absolute z-10 left-0 w-60 max-h-60 overflow-y-auto custom-scrollbar py-2 bg-white shadow-lg ring-1 ring-black/5 rounded font-sans"
+          >
+            {options.map((option, key) => {
+              return (
+                <li
+                  key={key}
+                  tabIndex={-1}
+                  className={cx(
+                    'flex items-center gap-4 w-full py-2 px-4 hover:bg-gray-100',
+                    { 'bg-gray-100': LIIndex === key }
+                  )}
+                  onClick={() => {
+                    formBlocks.set((prev) => {
+                      const next = [...prev]
+                      const index = next.findIndex(
+                        (e) => e.blockID === block.blockID
+                      )
+                      console.log(next[index])
+                      next[index] = { ...block, ...option }
+                      return next
+                    })
+                    setShowBlockSelect(false)
+                  }}
+                >
+                  <span>{option.label}</span>
+                </li>
+              )
+            })}
+          </ul>
+        </Transition>
+      </div>
     </div>
   )
 }
