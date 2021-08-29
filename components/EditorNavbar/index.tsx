@@ -1,7 +1,9 @@
 import * as React from 'react'
 import { useAtom } from 'jotai'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
 import cx from 'classnames'
+import toast, { Toaster } from 'react-hot-toast'
 import { Popover, RadioGroup, Transition } from '@headlessui/react'
 import {
   ArrowRightIcon,
@@ -11,7 +13,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/outline'
 
-import { headerAtom, optionsAtom, styleAtom, titleAtom } from 'lib/atoms/form'
+import { blocksAtom, headerAtom, optionsAtom, styleAtom } from 'lib/atoms/form'
 import { LabelSwitch } from 'components/LabelSwitch'
 import { formOptions, formStyle } from 'lib/types/form'
 
@@ -32,8 +34,11 @@ const EditorNavbar = ({
   style: formStyle
   options: formOptions
 }) => {
+  const router = useRouter()
   const [, setStyle] = useAtom(styleAtom)
   const [, setOptions] = useAtom(optionsAtom)
+  const [header] = useAtom(headerAtom)
+  const [blocks] = useAtom(blocksAtom)
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -52,6 +57,7 @@ const EditorNavbar = ({
         />
       )}
       <span className="flex-1 truncate">{title}</span>
+      <Toaster position="top-center" reverseOrder={false} />
       <Popover className="lg:relative">
         <Popover.Button className="btn">
           <span className="sr-only">Toggle form options</span>
@@ -162,7 +168,31 @@ const EditorNavbar = ({
           </Popover.Panel>
         </Transition>
       </Popover>
-      <button className="btn btn-primary">
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          const request = fetch(`/api/forms`, {
+            method: 'POST',
+            body: JSON.stringify({
+              title: title,
+              style: style,
+              header: header,
+              options: options,
+              blocks: blocks,
+            }),
+          })
+          toast
+            .promise(request, {
+              loading: `Wait, we're cooking a new form`,
+              success: 'New form created',
+              error: 'Error creating form',
+            })
+            .then((res) => res.json())
+            .then(({ id }) => {
+              router.push(`/${id}/viewform`)
+            })
+        }}
+      >
         <span>Publish</span>
         <ArrowRightIcon className="icon" />
       </button>
