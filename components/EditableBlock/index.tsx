@@ -199,6 +199,7 @@ const EditableBlock = ({
               showPlaceholder,
             'before:text-opacity-0 group-focus-within:before:text-opacity-100 group-hover:before:text-opacity-100 before:transition-opacity':
               block.tag === 'p',
+            'text-gray-400': ['input', 'textarea'].includes(block.tag),
           }),
           suppressContentEditableWarning: true,
           onInput: (e: InputEvent) => {
@@ -206,7 +207,7 @@ const EditableBlock = ({
             const content = target.textContent
             if (content !== '') {
               setShowPlaceholder(false)
-              if (content?.indexOf('/') === 0) {
+              if (block.tag === 'p' && content?.indexOf('/') === 0) {
                 setShowBlockSelect(true)
                 const blockFilter = content.split('/')[1]
                 setOptions(
@@ -230,6 +231,15 @@ const EditableBlock = ({
             } else {
               setShowPlaceholder(true)
               setShowBlockSelect(false)
+              setBlocks((prev) => {
+                const next = [...prev]
+                const i = next.findIndex((e) => e.id === block.id)
+                next[i] = {
+                  ...block,
+                  value: null,
+                }
+                return next
+              })
             }
           },
         },
