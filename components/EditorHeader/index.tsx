@@ -75,7 +75,7 @@ const EditorHeader = ({
           </div>
           <Popover
             className={cx('relative mx-auto z-10', {
-              'max-w-7xl': style.fullWidth,
+              'max-w-5xl': style.fullWidth,
               'max-w-xl': !style.fullWidth,
             })}
           >
