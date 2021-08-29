@@ -9,7 +9,7 @@ export default async function handler(
 ) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET'])
-    res.status(200).end(`Method ${req.method} not allowed`)
+    res.status(405).end(`Method ${req.method} not allowed`)
   }
   try {
     const request = await fetch(`${API}/photos/random?client_id=${TOKEN}`)
