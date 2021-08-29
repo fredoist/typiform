@@ -18,9 +18,6 @@
   .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-gray-300;
   }
-  .with-placeholder {
-    @apply before:content-[attr(placeholder)] before:text-gray-400 before:cursor-text;
-  }
   .draggable-block-line {
     @apply !border-b-4 !border-blue-300 !border-solid;
   }

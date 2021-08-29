@@ -3,35 +3,28 @@ import { useAtom } from 'jotai'
 import cx from 'classnames'
 import ReactDragListView from 'react-drag-listview'
 
+import definedBlocks from 'lib/blocks.json'
 import { EditableBlock } from 'components/EditableBlock'
-import { createID } from 'lib/utils/createID'
-import { blocksAtom, styleAtom, titleAtom } from 'lib/atoms/form'
-import { formBlock } from 'lib/types/form'
+import { titleAtom } from 'lib/atoms/form'
+import { formBlock, formStyle } from 'lib/types/form'
+import { placeCaretAtEnd } from 'lib/utils/placeCaretAtEnd'
+import { useBlocks } from 'lib/hooks/useBlocks'
 
-const EditablePage = () => {
-  const [title, setTitle] = useAtom(titleAtom)
-  const [blocks, setBlocks] = useAtom(blocksAtom)
-  const [style, setStyle] = useAtom(styleAtom)
+const EditablePage = ({
+  title,
+  blocks,
+  style,
+}: {
+  title: string | null
+  blocks: formBlock[]
+  style: formStyle
+}) => {
+  const [, setTitle] = useAtom(titleAtom)
   const [isCommand, setIsCommand] = React.useState<boolean>(false)
   const [latestBlock, setLatestBlock] = React.useState<formBlock | null>(null)
+  const { addBlock, moveBlock, removeBlock } = useBlocks()
 
   React.useEffect(() => {
-    function placeCaretAtEnd(el: HTMLDivElement) {
-      el.focus()
-      if (
-        typeof window.getSelection != 'undefined' &&
-        typeof document.createRange != 'undefined'
-      ) {
-        var range = document.createRange()
-        range.selectNodeContents(el)
-        range.collapse(false)
-        var sel: Selection | null = window.getSelection()
-        if (sel) {
-          sel.removeAllRanges()
-          sel.addRange(range)
-        }
-      }
-    }
     if (latestBlock && latestBlock.id) {
       ;(document.getElementById(latestBlock?.id) as HTMLDivElement).focus()
       placeCaretAtEnd(
@@ -49,20 +42,7 @@ const EditablePage = () => {
           if (!isCommand) {
             e.preventDefault()
             e.stopPropagation()
-            const block = {
-              id: createID('tf-block'),
-              tag: 'p',
-              hint: "Type '/' to add a command",
-              props: {
-                className: 'py-1',
-              },
-            }
-            setBlocks((prev) => {
-              const next = [...prev]
-              const index = next.findIndex((block) => block.id === target.id)
-              next.splice(index + 1, 0, block)
-              return next
-            })
+            const block = addBlock(definedBlocks[0], target.id)
             setLatestBlock(block)
           }
           break
@@ -71,13 +51,13 @@ const EditablePage = () => {
             e.preventDefault()
             e.stopPropagation()
             const index = blocks.findIndex((block) => block.id === target.id)
-            setBlocks((prev) => prev.filter((block) => block.id !== target.id))
+            removeBlock(target.id)
             if (blocks.length > 1) {
               setLatestBlock(blocks[index - 1])
             } else if (blocks.length === 1) {
-              ;(
-                document.getElementById('form-title') as HTMLHeadingElement
-              ).focus()
+              placeCaretAtEnd(
+                document.getElementById('form-title') as HTMLDivElement
+              )
             } else {
               setLatestBlock(blocks[0])
             }
@@ -89,7 +69,11 @@ const EditablePage = () => {
             e.stopPropagation()
             if (target.id === 'form-title') {
               setLatestBlock(blocks[0])
-              if (blocks[0].id) document.getElementById(blocks[0].id)?.focus()
+              if (blocks[0].id) {
+                placeCaretAtEnd(
+                  document.getElementById(blocks[0].id) as HTMLDivElement
+                )
+              }
             } else {
               i = blocks.findIndex((block) => block.id === target.id)
               setLatestBlock(blocks[i + 1])
@@ -102,9 +86,9 @@ const EditablePage = () => {
             if (i >= 1) {
               setLatestBlock(blocks[i - 1])
             } else {
-              ;(
-                document.getElementById('form-title') as HTMLHeadingElement
-              ).focus()
+              placeCaretAtEnd(
+                document.getElementById('form-title') as HTMLDivElement
+              )
             }
           } else {
             setLatestBlock(blocks[0])
@@ -117,22 +101,30 @@ const EditablePage = () => {
   return (
     <div
       onKeyDown={handleGlobalKeyboar}
-      className={cx(style.fontStyle, 'mx-auto max-w-2xl px-2', {
-        'max-w-7xl': style.fullWidth,
+      className={cx(style.fontStyle, 'mx-auto px-2', {
+        'max-w-5xl': style.fullWidth,
+        'max-w-xl': !style.fullWidth,
+        'text-sm': style.smallText,
+        'text-base': !style.smallText,
       })}
     >
       <div
         id="form-title"
         contentEditable
         suppressContentEditableWarning
-        placeholder="Form title"
+        placeholder="Untitled form"
         className={cx(
           style.fontStyle,
-          'mt-2 mb-6 text-2xl lg:text-3xl font-bold leading-none focus:outline-none',
-          { 'with-placeholder': !title }
+          'mt-2 mb-6 font-bold leading-none focus:outline-none',
+          {
+            'text-xl lg:text-2xl': style.smallText,
+            'text-2xl lg:text-3xl': !style.smallText,
+            'before:!content-[attr(placeholder)] before:text-gray-300 before:cursor-text':
+              !title,
+          }
         )}
         onInput={(e) => {
-          const target = e.target as HTMLHeadingElement
+          const target = e.target as HTMLDivElement
           const content = target.textContent
           if (content !== '') {
             setTitle(content)
@@ -145,14 +137,7 @@ const EditablePage = () => {
         nodeSelector="div.draggable-block"
         handleSelector="button.draggable-block-button"
         lineClassName="draggable-block-line"
-        onDragEnd={(fromIndex: number, toIndex: number): void => {
-          setBlocks((prev) => {
-            const data = [...prev]
-            const item = data.splice(fromIndex, 1)[0]
-            data.splice(toIndex, 0, item)
-            return data
-          })
-        }}
+        onDragEnd={moveBlock}
       >
         {blocks.map((block) => (
           <EditableBlock

@@ -8,6 +8,7 @@ import {
   TrashIcon,
   ViewGridIcon,
 } from '@heroicons/react/outline'
+
 import { blocksAtom } from 'lib/atoms/form'
 import blockTypes from 'lib/blocks.json'
 import { formBlock } from 'lib/types/form'
@@ -113,7 +114,7 @@ const EditableBlock = ({
   }, [ULRef])
 
   return (
-    <div className="relative group draggable-block">
+    <div className="relative group draggable-block group">
       <div className="absolute -left-2 top-0 -translate-x-full flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity font-sans">
         <button tabIndex={-1} className="btn">
           <PlusIcon className="icon text-gray-500" />
@@ -169,7 +170,10 @@ const EditableBlock = ({
           placeholder: block.placeholder,
           contentEditable: true,
           className: cx(block.props?.className, 'focus:outline-none', {
-            'with-placeholder': showPlaceholder,
+            'before:!content-[attr(placeholder)] before:text-gray-400 before:cursor-text':
+              showPlaceholder,
+            'before:text-opacity-0 group-focus-within:before:text-opacity-100 group-hover:before:text-opacity-100 before:transition-opacity':
+              block.tag === 'p',
           }),
           suppressContentEditableWarning: true,
           onInput: (e: InputEvent) => {

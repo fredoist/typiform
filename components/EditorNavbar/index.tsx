@@ -13,6 +13,7 @@ import {
 
 import { headerAtom, optionsAtom, styleAtom, titleAtom } from 'lib/atoms/form'
 import { LabelSwitch } from 'components/LabelSwitch'
+import { formOptions, formStyle } from 'lib/types/form'
 
 const fontStyles = [
   { label: 'Default', class: 'font-sans' },
@@ -20,11 +21,19 @@ const fontStyles = [
   { label: 'Mono', class: 'font-mono' },
 ]
 
-const EditorNavbar = () => {
-  const [title] = useAtom(titleAtom)
-  const [header] = useAtom(headerAtom)
-  const [style, setStyle] = useAtom(styleAtom)
-  const [options, setOptions] = useAtom(optionsAtom)
+const EditorNavbar = ({
+  title,
+  icon,
+  style,
+  options,
+}: {
+  title: string | null
+  icon: string | undefined
+  style: formStyle
+  options: formOptions
+}) => {
+  const [, setStyle] = useAtom(styleAtom)
+  const [, setOptions] = useAtom(optionsAtom)
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -32,9 +41,9 @@ const EditorNavbar = () => {
         <span className="sr-only">Toggle sidebar</span>
         <MenuIcon className="icon" />
       </button>
-      {header.icon && (
+      {icon && (
         <Image
-          src={header.icon}
+          src={icon}
           alt="Icon"
           unoptimized={true}
           width={20}
@@ -105,7 +114,7 @@ const EditorNavbar = () => {
                 }}
               />
               <LabelSwitch
-                label="Full width"
+                label="Wider layour"
                 checked={style.fullWidth}
                 onChange={(value) => {
                   setStyle((state) => ({ ...state, fullWidth: value }))
