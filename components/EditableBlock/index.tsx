@@ -12,20 +12,24 @@ import {
 import { blocksAtom } from 'lib/atoms/form'
 import blockTypes from 'lib/blocks.json'
 import { formBlock } from 'lib/types/form'
+import { useBlocks } from 'lib/hooks/useBlocks'
 
 const EditableBlock = ({
   setIsCommand,
   block,
+  setLatestBlock,
 }: {
   setIsCommand: any
   block: formBlock
+  setLatestBlock: any
 }) => {
-  const [, setBlocks] = useAtom(blocksAtom)
+  const [blocks, setBlocks] = useAtom(blocksAtom)
   const [LIIndex, setLIIndex] = React.useState<number>(0)
   const ULRef = React.useRef<any>(null)
   const [showPlaceholder, setShowPlaceholder] = React.useState<boolean>(true)
   const [showBlockSelect, setShowBlockSelect] = React.useState<boolean>(false)
   const [options, setOptions] = React.useState<any[]>(blockTypes)
+  const { addBlock, removeBlock } = useBlocks()
 
   React.useEffect(() => {
     let selectedBlock = 0
@@ -121,7 +125,14 @@ const EditableBlock = ({
   }, [ULRef])
 
   return (
-    <div className="relative group draggable-block group">
+    <div
+      className="relative group draggable-block"
+      style={{
+        // hack to prevent other block elements to appear above current block
+        // this sets z-index hierarchy by highest to lowest on the block tree
+        zIndex: blocks.length - blocks.findIndex((e) => e.id === block.id),
+      }}
+    >
       <div className="absolute -left-2 top-0 -translate-x-full flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity font-sans">
         <button tabIndex={-1} className="btn">
           <PlusIcon className="icon text-gray-500" />
@@ -147,6 +158,10 @@ const EditableBlock = ({
                       'flex items-center gap-2 py-2 px-4 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none w-full',
                       { 'bg-gray-100': active }
                     )}
+                    onClick={() => {
+                      const newBlock = addBlock(block, block.id)
+                      setLatestBlock(newBlock)
+                    }}
                   >
                     <DuplicateIcon className="icon text-gray-500" />
                     <span>Clone</span>
@@ -160,6 +175,9 @@ const EditableBlock = ({
                       'flex items-center gap-2 py-2 px-4 hover:bg-gray-100 w-full',
                       { 'bg-gray-100': active }
                     )}
+                    onClick={() => {
+                      if (block.id) removeBlock(block.id)
+                    }}
                   >
                     <TrashIcon className="icon text-gray-500" />
                     <span>Remove</span>

@@ -143,6 +143,7 @@ const EditablePage = ({
             key={block.id}
             setIsCommand={setIsCommand}
             block={block}
+            setLatestBlock={setLatestBlock}
           />
         ))}
       </ReactDragListView>
