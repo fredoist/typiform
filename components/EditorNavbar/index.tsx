@@ -16,6 +16,7 @@ import {
 import { blocksAtom, headerAtom, optionsAtom, styleAtom } from 'lib/atoms/form'
 import { LabelSwitch } from 'components/LabelSwitch'
 import { formOptions, formStyle } from 'lib/types/form'
+import { useUser } from '@auth0/nextjs-auth0'
 
 const fontStyles = [
   { label: 'Default', class: 'font-sans' },
@@ -39,6 +40,7 @@ const EditorNavbar = ({
   const [, setOptions] = useAtom(optionsAtom)
   const [header] = useAtom(headerAtom)
   const [blocks] = useAtom(blocksAtom)
+  const { user, error, isLoading } = useUser()
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -130,8 +132,11 @@ const EditorNavbar = ({
             <div className="py-2">
               <LabelSwitch
                 label="Public responses"
-                checked={options.publicResponses}
+                checked={!user ? true : options.publicResponses}
                 onChange={(value) => {
+                  if (!user) {
+                    return toast.error(`Log in first to hide form responses`)
+                  }
                   setOptions((state) => ({
                     ...state,
                     publicResponses: value,
@@ -140,8 +145,11 @@ const EditorNavbar = ({
               />
               <LabelSwitch
                 label="Lock responses"
-                checked={options.lockedResponses}
+                checked={!user ? false : options.lockedResponses}
                 onChange={(value) => {
+                  if (!user) {
+                    return toast.error(`Log in first to lock form responses`)
+                  }
                   setOptions((state) => ({
                     ...state,
                     lockedResponses: value,
@@ -175,16 +183,19 @@ const EditorNavbar = ({
             method: 'POST',
             body: JSON.stringify({
               title: title,
+              workspace: user?.sub,
               style: style,
               header: header,
-              options: options,
+              options: !user
+                ? { publicResponses: true, lockedResponses: false }
+                : options,
               blocks: blocks,
             }),
           })
           toast
             .promise(request, {
-              loading: `Wait, we're cooking a new form`,
-              success: 'New form created',
+              loading: `Wait, we're publishing your form`,
+              success: 'Redirecting to form view',
               error: 'Error creating form',
             })
             .then((res) => res.json())

@@ -11,9 +11,13 @@ const IndexPage: NextPage = () => {
     <div>
       <h1>Hello, {user?.name}</h1>
       {user ? (
-        <Link href="/create">Create a form</Link>
+        <div>
+          <Link href="/create">Create a form</Link>
+          <br />
+          <a href="/api/auth/logout">Log Out</a>
+        </div>
       ) : (
-        <a href="/api/auth/login">Log In</a>
+        <a href="/api/auth/login?returnTo=/create">Log In</a>
       )}
     </div>
   )
