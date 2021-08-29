@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useAtom } from 'jotai'
 import Image from 'next/image'
 import cx from 'classnames'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -12,7 +13,7 @@ import {
 
 import { UploadBox } from 'components/UploadBox'
 import { UploadLinkForm } from 'components/UploadLinkForm'
-import { formHeader, formStyle } from 'lib/entities/form'
+import { headerAtom, styleAtom } from 'lib/atoms/form'
 
 interface searchResults {
   total: number
@@ -26,8 +27,8 @@ interface searchResults {
 }
 
 const EditorCover = () => {
-  const cover = formHeader.use((state) => state.cover)
-  const style = formStyle.use()
+  const [header, setHeader] = useAtom(headerAtom)
+  const [style, setStyle] = useAtom(styleAtom)
   // Unsplash Search Infinite Scroll
   const [query, setQuery] = React.useState<string | null>(null)
   const [searchPage, setSearchPage] = React.useState<number>(1)
@@ -49,10 +50,10 @@ const EditorCover = () => {
           }
         )}
       >
-        {cover && (
+        {header.cover && (
           <Image
             alt="Cover"
-            src={cover}
+            src={header.cover}
             unoptimized={true}
             layout="fill"
             objectFit="cover"
@@ -112,7 +113,7 @@ const EditorCover = () => {
                     onClick={async () => {
                       const request = await fetch('/api/unsplash/random')
                       const response = await request.json()
-                      formHeader.set((prev) => ({
+                      setHeader((prev) => ({
                         ...prev,
                         cover: response.urls.full,
                       }))
@@ -132,8 +133,8 @@ const EditorCover = () => {
                   <button
                     className="btn"
                     onClick={() => {
-                      formHeader.set((state) => ({
-                        ...state,
+                      setHeader((prev) => ({
+                        ...prev,
                         cover: undefined,
                       }))
                     }}
@@ -147,7 +148,7 @@ const EditorCover = () => {
                   <UploadBox
                     id="cover-upload"
                     onUpload={(value) => {
-                      formHeader.set((state) => ({ ...state, cover: value }))
+                      setHeader((prev) => ({ ...prev, cover: value }))
                     }}
                   />
                 </Tab.Panel>
@@ -155,7 +156,7 @@ const EditorCover = () => {
                   <UploadLinkForm
                     id="cover-link"
                     onSubmit={(value) => {
-                      formHeader.set((state) => ({ ...state, cover: value }))
+                      setHeader((prev) => ({ ...prev, cover: value }))
                     }}
                   />
                 </Tab.Panel>
@@ -244,8 +245,8 @@ const EditorCover = () => {
                                 disabled={isLoading}
                                 onClick={async () => {
                                   if (isLoading) return
-                                  formHeader.set((state) => ({
-                                    ...state,
+                                  setHeader((prev) => ({
+                                    ...prev,
                                     cover: urls.full,
                                   }))
                                   setIsLoading(true)

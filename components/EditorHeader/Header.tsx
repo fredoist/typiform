@@ -1,13 +1,14 @@
 import cx from 'classnames'
+import { useAtom } from 'jotai'
 import { EmojiHappyIcon, PhotographIcon } from '@heroicons/react/outline'
 
 import { EditorIcon as Icon } from './Icon'
 import { EditorCover as Cover } from './Cover'
-import { formHeader, formStyle, formTitle } from 'lib/entities/form'
+import { headerAtom, styleAtom } from 'lib/atoms/form'
 
 const EditorHeader = () => {
-  const header = formHeader.use()
-  const style = formStyle.use()
+  const [header, setHeader] = useAtom(headerAtom)
+  const [style, setStyle] = useAtom(styleAtom)
 
   return (
     <header className="relative group">
@@ -26,9 +27,9 @@ const EditorHeader = () => {
           {!header.icon && (
             <button
               className="btn"
-              onClick={() =>
-                formHeader.set((state) => ({ ...state, icon: '/icon.png' }))
-              }
+              onClick={() => {
+                setHeader((state) => ({ ...state, icon: '/icon.png' }))
+              }}
             >
               <EmojiHappyIcon className="icon" />
               <span>Add icon</span>
@@ -40,7 +41,7 @@ const EditorHeader = () => {
               onClick={async () => {
                 const request = await fetch('/api/unsplash/random')
                 const response = await request.json()
-                formHeader.set((state) => ({
+                setHeader((state) => ({
                   ...state,
                   cover: response.urls.full,
                 }))

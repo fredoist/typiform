@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useAtom } from 'jotai'
 import Image from 'next/image'
 import cx from 'classnames'
 import { Popover, RadioGroup, Transition } from '@headlessui/react'
@@ -10,13 +11,8 @@ import {
   TrashIcon,
 } from '@heroicons/react/outline'
 
+import { headerAtom, optionsAtom, styleAtom, titleAtom } from 'lib/atoms/form'
 import { LabelSwitch } from 'components/LabelSwitch'
-import {
-  formHeader,
-  formOptions,
-  formStyle,
-  formTitle,
-} from 'lib/entities/form'
 
 const fontStyles = [
   { label: 'Default', class: 'font-sans' },
@@ -25,10 +21,10 @@ const fontStyles = [
 ]
 
 const EditorNavbar = () => {
-  const title = formTitle.use()
-  const style = formStyle.use()
-  const options = formOptions.use()
-  const header = formHeader.use()
+  const [title] = useAtom(titleAtom)
+  const [header] = useAtom(headerAtom)
+  const [style, setStyle] = useAtom(styleAtom)
+  const [options, setOptions] = useAtom(optionsAtom)
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -64,9 +60,9 @@ const EditorNavbar = () => {
           <Popover.Panel className="absolute right-2 translate-y-2 w-60 max-h-[calc(100vh-50px)] overflow-y-auto bg-white shadow-lg ring-1 ring-black/5 rounded divide-y divide-gray-100">
             <RadioGroup
               value={style.fontStyle}
-              onChange={(value) =>
-                formStyle.set((state) => ({ ...state, fontStyle: value }))
-              }
+              onChange={(value) => {
+                setStyle((state) => ({ ...state, fontStyle: value }))
+              }}
               className="p-2 grid grid-cols-3"
             >
               <RadioGroup.Label className="sr-only">
@@ -104,38 +100,38 @@ const EditorNavbar = () => {
               <LabelSwitch
                 label="Small text"
                 checked={style.smallText}
-                onChange={(value) =>
-                  formStyle.set((state) => ({ ...state, smallText: value }))
-                }
+                onChange={(value) => {
+                  setStyle((state) => ({ ...state, smallText: value }))
+                }}
               />
               <LabelSwitch
                 label="Full width"
                 checked={style.fullWidth}
-                onChange={(value) =>
-                  formStyle.set((state) => ({ ...state, fullWidth: value }))
-                }
+                onChange={(value) => {
+                  setStyle((state) => ({ ...state, fullWidth: value }))
+                }}
               />
             </div>
             <div className="py-2">
               <LabelSwitch
                 label="Public responses"
                 checked={options.publicResponses}
-                onChange={(value) =>
-                  formOptions.set((state) => ({
+                onChange={(value) => {
+                  setOptions((state) => ({
                     ...state,
                     publicResponses: value,
                   }))
-                }
+                }}
               />
               <LabelSwitch
                 label="Lock responses"
                 checked={options.lockedResponses}
-                onChange={(value) =>
-                  formOptions.set((state) => ({
+                onChange={(value) => {
+                  setOptions((state) => ({
                     ...state,
                     lockedResponses: value,
                   }))
-                }
+                }}
               />
             </div>
             <div className="py-2">

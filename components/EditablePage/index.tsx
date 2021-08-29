@@ -1,18 +1,19 @@
 import * as React from 'react'
+import { useAtom } from 'jotai'
 import cx from 'classnames'
 import ReactDragListView from 'react-drag-listview'
 
-import { formStyle, formTitle, formBlocks } from 'lib/entities/form'
 import { EditableBlock } from 'components/EditableBlock'
 import { createID } from 'lib/utils/createID'
-import { Block } from 'lib/interfaces/Block'
+import { blocksAtom, styleAtom, titleAtom } from 'lib/atoms/form'
+import { formBlock } from 'lib/types/form'
 
 const EditablePage = () => {
-  const title = formTitle.use()
-  const style = formStyle.use()
-  const blocks = formBlocks.use()
+  const [title, setTitle] = useAtom(titleAtom)
+  const [blocks, setBlocks] = useAtom(blocksAtom)
+  const [style, setStyle] = useAtom(styleAtom)
   const [isCommand, setIsCommand] = React.useState<boolean>(false)
-  const [latestBlock, setLatestBlock] = React.useState<Block | null>(null)
+  const [latestBlock, setLatestBlock] = React.useState<formBlock | null>(null)
 
   React.useEffect(() => {
     function placeCaretAtEnd(el: HTMLDivElement) {
@@ -31,10 +32,10 @@ const EditablePage = () => {
         }
       }
     }
-    if (latestBlock && latestBlock.blockID) {
-      ;(document.getElementById(latestBlock?.blockID) as HTMLDivElement).focus()
+    if (latestBlock && latestBlock.id) {
+      ;(document.getElementById(latestBlock?.id) as HTMLDivElement).focus()
       placeCaretAtEnd(
-        document.getElementById(latestBlock?.blockID) as HTMLDivElement
+        document.getElementById(latestBlock?.id) as HTMLDivElement
       )
     }
   }, [latestBlock])
@@ -42,25 +43,23 @@ const EditablePage = () => {
   function handleGlobalKeyboar(e: React.KeyboardEvent) {
     if (!isCommand) {
       const target = e.target as HTMLDivElement
-      let i: number, next: Block
+      let i: number
       switch (e.key) {
         case 'Enter':
           if (!isCommand) {
             e.preventDefault()
             e.stopPropagation()
             const block = {
-              blockID: createID('tf-block'),
+              id: createID('tf-block'),
               tag: 'p',
               hint: "Type '/' to add a command",
               props: {
                 className: 'py-1',
               },
             }
-            formBlocks.set((prev) => {
+            setBlocks((prev) => {
               const next = [...prev]
-              const index = next.findIndex(
-                (block) => block.blockID === target.id
-              )
+              const index = next.findIndex((block) => block.id === target.id)
               next.splice(index + 1, 0, block)
               return next
             })
@@ -71,12 +70,8 @@ const EditablePage = () => {
           if (target.textContent === '') {
             e.preventDefault()
             e.stopPropagation()
-            const index = blocks.findIndex(
-              (block) => block.blockID === target.id
-            )
-            formBlocks.set((prev) =>
-              prev.filter((block) => block.blockID !== target.id)
-            )
+            const index = blocks.findIndex((block) => block.id === target.id)
+            setBlocks((prev) => prev.filter((block) => block.id !== target.id))
             if (blocks.length > 1) {
               setLatestBlock(blocks[index - 1])
             } else if (blocks.length === 1) {
@@ -94,17 +89,16 @@ const EditablePage = () => {
             e.stopPropagation()
             if (target.id === 'form-title') {
               setLatestBlock(blocks[0])
-              if (blocks[0].blockID)
-                document.getElementById(blocks[0].blockID)?.focus()
+              if (blocks[0].id) document.getElementById(blocks[0].id)?.focus()
             } else {
-              i = blocks.findIndex((block) => block.blockID === target.id)
+              i = blocks.findIndex((block) => block.id === target.id)
               setLatestBlock(blocks[i + 1])
             }
           }
           break
         case 'ArrowUp':
           if (blocks.length > 0) {
-            i = blocks.findIndex((block) => block.blockID === target.id)
+            i = blocks.findIndex((block) => block.id === target.id)
             if (i >= 1) {
               setLatestBlock(blocks[i - 1])
             } else {
@@ -141,9 +135,9 @@ const EditablePage = () => {
           const target = e.target as HTMLHeadingElement
           const content = target.textContent
           if (content !== '') {
-            formTitle.set(content)
+            setTitle(content)
           } else {
-            formTitle.set(null)
+            setTitle(null)
           }
         }}
       />
@@ -152,7 +146,7 @@ const EditablePage = () => {
         handleSelector="button.draggable-block-button"
         lineClassName="draggable-block-line"
         onDragEnd={(fromIndex: number, toIndex: number): void => {
-          formBlocks.set((prev) => {
+          setBlocks((prev) => {
             const data = [...prev]
             const item = data.splice(fromIndex, 1)[0]
             data.splice(toIndex, 0, item)
@@ -162,7 +156,7 @@ const EditablePage = () => {
       >
         {blocks.map((block) => (
           <EditableBlock
-            key={block.blockID}
+            key={block.id}
             setIsCommand={setIsCommand}
             block={block}
           />

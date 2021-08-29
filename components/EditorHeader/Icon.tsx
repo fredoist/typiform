@@ -1,27 +1,30 @@
 import * as React from 'react'
+import { useAtom } from 'jotai'
 import Image from 'next/image'
 import cx from 'classnames'
 import { Popover, Tab, Transition } from '@headlessui/react'
 
 import { UploadBox } from 'components/UploadBox'
 import { UploadLinkForm } from 'components/UploadLinkForm'
-import { formHeader } from 'lib/entities/form'
+import { headerAtom } from 'lib/atoms/form'
 
 const EditorIcon = () => {
-  const icon = formHeader.use((state) => state.icon)
-  const hasCover = formHeader.use((state) => state.cover)
+  const [header, setHeader] = useAtom(headerAtom)
 
   return (
     <Popover className="relative">
       <Popover.Button
         className={cx(
           'w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded hover:ring-8 hover:ring-black/10 overflow-hidden',
-          { 'relative mt-5': !hasCover, 'absolute -translate-y-1/2': hasCover }
+          {
+            'relative mt-5': !header.cover,
+            'absolute -translate-y-1/2': header.cover,
+          }
         )}
       >
-        {icon && (
+        {header.icon && (
           <Image
-            src={icon}
+            src={header.icon}
             alt="Icon"
             unoptimized={true}
             width={128}
@@ -41,7 +44,7 @@ const EditorIcon = () => {
         <Popover.Panel
           className={cx(
             'absolute left-0 translate-y-2 w-full max-w-sm bg-white rounded shadow-lg ring-1 ring-black/5 p-2 z-10',
-            { 'top-8 md:top-16 lg:top-20': hasCover }
+            { 'top-8 md:top-16 lg:top-20': header.cover }
           )}
         >
           <Tab.Group>
@@ -64,7 +67,7 @@ const EditorIcon = () => {
               <button
                 className="btn"
                 onClick={() => {
-                  formHeader.set((state) => ({ ...state, icon: undefined }))
+                  setHeader((state) => ({ ...state, icon: undefined }))
                 }}
               >
                 Remove
@@ -75,7 +78,7 @@ const EditorIcon = () => {
                 <UploadBox
                   id="icon-upload"
                   onUpload={(value) => {
-                    formHeader.set((state) => ({ ...state, icon: value }))
+                    setHeader((state) => ({ ...state, icon: value }))
                   }}
                 />
               </Tab.Panel>
@@ -83,7 +86,7 @@ const EditorIcon = () => {
                 <UploadLinkForm
                   id="icon-link"
                   onSubmit={(value) => {
-                    formHeader.set((state) => ({ ...state, icon: value }))
+                    setHeader((state) => ({ ...state, icon: value }))
                   }}
                 />
               </Tab.Panel>

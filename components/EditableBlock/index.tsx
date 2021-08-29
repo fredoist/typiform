@@ -1,69 +1,30 @@
 import * as React from 'react'
+import { useAtom } from 'jotai'
 import cx from 'classnames'
 import { Menu, Transition } from '@headlessui/react'
 import {
-  AtSymbolIcon,
   DuplicateIcon,
-  MenuAlt3Icon,
-  MenuAlt4Icon,
   PlusIcon,
   TrashIcon,
   ViewGridIcon,
 } from '@heroicons/react/outline'
-import { formBlocks } from 'lib/entities/form'
-import { Block } from 'lib/interfaces/Block'
-
-const blockOptions = [
-  {
-    id: 'short-answer',
-    label: 'Short answer',
-    tag: 'input',
-    hint: 'Enter a placeholder',
-    icon: 'MenuAlt3Icon',
-    props: {
-      className: 'border-2 border-red-500',
-      placeholder: '',
-      value: '',
-    },
-  },
-  {
-    id: 'long-answer',
-    label: 'Long answer',
-    icon: 'MenuAlt4Icon',
-    tag: 'input',
-    hint: 'Enter a placeholder',
-    props: {
-      className: 'border-2 border-green-600',
-      placeholder: '',
-      value: '',
-    },
-  },
-  {
-    id: 'email-address',
-    label: 'Email address',
-    icon: 'AtSymbolIcon',
-    tag: 'input',
-    hint: 'Enter a placeholder',
-    props: {
-      className: 'border-2 border-yellow-400',
-      placeholder: '',
-      value: '',
-    },
-  },
-]
+import { blocksAtom } from 'lib/atoms/form'
+import blockTypes from 'lib/blocks.json'
+import { formBlock } from 'lib/types/form'
 
 const EditableBlock = ({
   setIsCommand,
   block,
 }: {
   setIsCommand: any
-  block: Block
+  block: formBlock
 }) => {
+  const [, setBlocks] = useAtom(blocksAtom)
   const [LIIndex, setLIIndex] = React.useState<number>(0)
   const ULRef = React.useRef<any>(null)
   const [showPlaceholder, setShowPlaceholder] = React.useState<boolean>(true)
   const [showBlockSelect, setShowBlockSelect] = React.useState<boolean>(false)
-  const [options, setOptions] = React.useState<Block[]>(blockOptions)
+  const [options, setOptions] = React.useState<any[]>(blockTypes)
 
   React.useEffect(() => {
     let selectedBlock = 0
@@ -116,10 +77,10 @@ const EditableBlock = ({
             case 'Enter':
               e.preventDefault()
               e.stopPropagation()
-              formBlocks.set((prev) => {
+              setBlocks((prev) => {
                 const next = [...prev]
-                const i = next.findIndex((e) => e.blockID === block.blockID)
-                next[i] = { ...block, ...options[selectedBlock] }
+                const index = next.findIndex((e) => e.id === block.id)
+                next[index] = { ...block, ...options[selectedBlock] }
                 return next
               })
               setShowBlockSelect(false)
@@ -139,7 +100,7 @@ const EditableBlock = ({
     }
     window.addEventListener('keydown', handleKeyboardEvents)
     return () => window.removeEventListener('keydown', handleKeyboardEvents)
-  }, [showBlockSelect, options, setIsCommand, block])
+  }, [showBlockSelect, options, setIsCommand, block, setBlocks])
 
   React.useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -204,10 +165,10 @@ const EditableBlock = ({
       {React.createElement(
         'div',
         {
-          id: block.blockID,
-          placeholder: block.hint,
+          id: block.id,
+          placeholder: block.placeholder,
           contentEditable: true,
-          className: cx(block.props.className, 'focus:outline-none', {
+          className: cx(block.props?.className, 'focus:outline-none', {
             'with-placeholder': showPlaceholder,
           }),
           suppressContentEditableWarning: true,
@@ -220,19 +181,19 @@ const EditableBlock = ({
                 setShowBlockSelect(true)
                 const blockFilter = content.split('/')[1]
                 setOptions(
-                  blockOptions.filter((option) =>
+                  blockTypes.filter((option) =>
                     option.label
                       .toLowerCase()
                       .includes(blockFilter.toLowerCase())
                   )
                 )
               } else {
-                formBlocks.set((prev) => {
+                setBlocks((prev) => {
                   const next = [...prev]
-                  const i = next.findIndex((e) => e.blockID === block.blockID)
+                  const i = next.findIndex((e) => e.id === block.id)
                   next[i] = {
                     ...block,
-                    props: { ...block.props, value: content },
+                    value: content,
                   }
                   return next
                 })
@@ -270,11 +231,9 @@ const EditableBlock = ({
                     { 'bg-gray-100': LIIndex === key }
                   )}
                   onClick={() => {
-                    formBlocks.set((prev) => {
+                    setBlocks((prev) => {
                       const next = [...prev]
-                      const index = next.findIndex(
-                        (e) => e.blockID === block.blockID
-                      )
+                      const index = next.findIndex((e) => e.id === block.id)
                       console.log(next[index])
                       next[index] = { ...block, ...option }
                       return next
