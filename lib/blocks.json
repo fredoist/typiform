@@ -27,7 +27,7 @@
     "tag": "hr",
     "label": "Divider",
     "props": {
-      "className": "relative before:w-full before:h-px before:bg-gray-300 before:absolute before:top-1/2 before:translate-y-1/2"
+      "className": "relative my-2 before:w-full before:h-px before:bg-gray-300 before:absolute before:top-1/2 before:translate-y-1/2"
     }
   },
   {
@@ -36,7 +36,7 @@
     "placeholder": "Add a placeholder",
     "props": {
       "type": "text",
-      "className": "p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+      "className": "w-full p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
     }
   },
   {
@@ -44,7 +44,7 @@
     "label": "Long answer",
     "placeholder": "Add a placeholder",
     "props": {
-      "className": "p-2 h-32 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+      "className": "w-full p-2 h-32 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
     }
   },
   {
@@ -53,7 +53,7 @@
     "placeholder": "Add a placeholder",
     "props": {
       "type": "email",
-      "className": "p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+      "className": "w-full p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
     }
   }
 ]
