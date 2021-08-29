@@ -4,6 +4,7 @@ module.exports = {
     './pages/**/*.{ts,tsx,js,jsx}',
     './containers/**/*.{ts,tsx,js,jsx}',
     './components/**/*.{ts,tsx,js,jsx}',
+    './lib/blocks.json',
   ],
   darkMode: false,
   theme: {

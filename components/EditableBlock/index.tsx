@@ -81,9 +81,16 @@ const EditableBlock = ({
               setBlocks((prev) => {
                 const next = [...prev]
                 const index = next.findIndex((e) => e.id === block.id)
-                next[index] = { ...block, ...options[selectedBlock] }
+                next[index] = { ...options[selectedBlock], id: block.id }
                 return next
               })
+              if (block.id) {
+                const target = document.getElementById(
+                  block?.id
+                ) as HTMLDivElement
+                target.textContent = null
+                setShowPlaceholder(true)
+              }
               setShowBlockSelect(false)
               break
             case 'Escape':
@@ -169,8 +176,8 @@ const EditableBlock = ({
           id: block.id,
           placeholder: block.placeholder,
           contentEditable: true,
-          className: cx(block.props?.className, 'focus:outline-none', {
-            'before:!content-[attr(placeholder)] before:text-gray-400 before:cursor-text':
+          className: cx(block.props?.className, 'my-2 focus:outline-none', {
+            'before:!content-[attr(placeholder)] before:text-gray-300 before:cursor-text':
               showPlaceholder,
             'before:text-opacity-0 group-focus-within:before:text-opacity-100 group-hover:before:text-opacity-100 before:transition-opacity':
               block.tag === 'p',
@@ -239,9 +246,17 @@ const EditableBlock = ({
                       const next = [...prev]
                       const index = next.findIndex((e) => e.id === block.id)
                       console.log(next[index])
-                      next[index] = { ...block, ...option }
+                      next[index] = { ...option, id: block.id }
                       return next
                     })
+                    if (block.id) {
+                      const target = document.getElementById(
+                        block?.id
+                      ) as HTMLDivElement
+                      target.textContent = null
+                      target.focus()
+                      setShowPlaceholder(true)
+                    }
                     setShowBlockSelect(false)
                   }}
                 >

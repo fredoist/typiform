@@ -26,10 +26,9 @@ const EditablePage = ({
 
   React.useEffect(() => {
     if (latestBlock && latestBlock.id) {
-      ;(document.getElementById(latestBlock?.id) as HTMLDivElement).focus()
-      placeCaretAtEnd(
-        document.getElementById(latestBlock?.id) as HTMLDivElement
-      )
+      const block = document.getElementById(latestBlock?.id) as HTMLDivElement
+      block.focus()
+      placeCaretAtEnd(block)
     }
   }, [latestBlock])
 
@@ -147,6 +146,7 @@ const EditablePage = ({
           />
         ))}
       </ReactDragListView>
+      <div className="h-60"></div>
     </div>
   )
 }
