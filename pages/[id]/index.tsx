@@ -86,7 +86,7 @@ const FormDashboard: NextPage = () => {
         </header>
         <Tab.Group as="div" className="px-4 lg:px-8">
           <Tab.List className="border-b border-gray-200 flex gap-x-6">
-            <Tab as={React.Fragment}>
+            {/* <Tab as={React.Fragment}>
               {({ selected }) => (
                 <button
                   className={cx('py-2 focus:outline-none border-b-2', {
@@ -97,7 +97,7 @@ const FormDashboard: NextPage = () => {
                   Summary
                 </button>
               )}
-            </Tab>
+            </Tab> */}
             <Tab as={React.Fragment}>
               {({ selected }) => (
                 <button
@@ -136,11 +136,11 @@ const FormDashboard: NextPage = () => {
             </Tab>
           </Tab.List>
           <Tab.Panels className="py-4">
-            <Tab.Panel>
+            {/* <Tab.Panel>
               <div>Summary Tab</div>
-            </Tab.Panel>
+            </Tab.Panel> */}
             <Tab.Panel>
-              <div className="overflow-x-auto w-full">
+              <div className="overflow-x-auto w-full custom-scrollbar">
                 {responses && (
                   <table className="w-full table">
                     <thead className="border-b border-gray-200">
