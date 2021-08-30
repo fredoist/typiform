@@ -5,18 +5,21 @@ import Image from 'next/image'
 import cx from 'classnames'
 import toast, { Toaster } from 'react-hot-toast'
 import { Popover, RadioGroup, Transition } from '@headlessui/react'
+import { useUser } from '@auth0/nextjs-auth0'
 import {
   ArrowRightIcon,
   DotsHorizontalIcon,
+  EyeIcon,
   LinkIcon,
   MenuIcon,
   TrashIcon,
 } from '@heroicons/react/outline'
 
-import { blocksAtom, headerAtom, optionsAtom, styleAtom } from 'lib/atoms/form'
+import { optionsAtom, styleAtom } from 'lib/atoms/form'
 import { LabelSwitch } from 'components/LabelSwitch'
 import { formOptions, formStyle } from 'lib/types/form'
-import { useUser } from '@auth0/nextjs-auth0'
+import { mutate } from 'swr'
+import { useFetchAll } from 'lib/hooks/useFetchAll'
 
 const fontStyles = [
   { label: 'Default', class: 'font-sans' },
@@ -39,9 +42,11 @@ const EditorNavbar = ({
   toggleSidebar: React.Dispatch<React.SetStateAction<boolean>>
   onPublish: React.MouseEventHandler<HTMLButtonElement>
 }) => {
+  const router = useRouter()
   const [, setStyle] = useAtom(styleAtom)
   const [, setOptions] = useAtom(optionsAtom)
   const { user } = useUser()
+  const { forms } = useFetchAll(`${user?.sub}`)
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -159,16 +164,45 @@ const EditorNavbar = ({
               />
             </div>
             <div className="py-2">
-              <button
-                onClick={() => {}}
+              <a
+                href={`/${router.query.id}/viewform`}
+                target="_blank"
+                rel="noreferrer"
                 className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+              >
+                <EyeIcon className="icon text-gray-400" />
+                <span>View form</span>
+              </a>
+              <button
+                className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                onClick={() => {
+                  const link = `${window.location.host}/${router.query.id}/viewform`
+                  navigator.clipboard.writeText(link)
+                  toast('Link copied to clipboard', {
+                    icon: '📎',
+                  })
+                }}
               >
                 <LinkIcon className="icon text-gray-400" />
                 <span>Copy link</span>
               </button>
               <button
-                onClick={() => {}}
                 className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                onClick={() => {
+                  const deleteForm = fetch(`/api/forms/${router.query.id}`, {
+                    method: 'DELETE',
+                  })
+                  toast
+                    .promise(deleteForm, {
+                      loading: `Deleting form`,
+                      success: `Form has been deleted`,
+                      error: `Error while deleting form`,
+                    })
+                    .then(() => {
+                      mutate(`/api/forms/user/${user?.sub}`)
+                      router.push(`/${forms[0].id}/edit`)
+                    })
+                }}
               >
                 <TrashIcon className="icon text-gray-400" />
                 <span>Delete</span>
