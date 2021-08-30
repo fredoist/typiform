@@ -21,4 +21,11 @@
   .draggable-block-line {
     @apply !border-b-4 !border-blue-300 !border-solid;
   }
+  .table th,
+  .table td {
+    @apply whitespace-nowrap;
+  }
+  .table tbody tr:nth-child(odd) {
+    @apply bg-gray-50;
+  }
 }

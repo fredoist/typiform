@@ -95,7 +95,7 @@ const ViewFormPage: NextPage = () => {
             onSubmit={handleSubmit((data) => {
               const submitForm = fetch(`/api/forms/${id}/responses`, {
                 method: 'POST',
-                body: JSON.stringify({ responses: data, formID: id }),
+                body: JSON.stringify({ data: data, formID: id }),
               })
               toast
                 .promise(submitForm, {
