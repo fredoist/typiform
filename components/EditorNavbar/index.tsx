@@ -29,11 +29,13 @@ const EditorNavbar = ({
   icon,
   style,
   options,
+  toggleSidebar,
 }: {
   title: string | null
   icon: string | undefined
   style: formStyle
   options: formOptions
+  toggleSidebar: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const router = useRouter()
   const [, setStyle] = useAtom(styleAtom)
@@ -44,7 +46,7 @@ const EditorNavbar = ({
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
-      <button className="btn">
+      <button className="btn" onClick={() => toggleSidebar((prev) => !prev)}>
         <span className="sr-only">Toggle sidebar</span>
         <MenuIcon className="icon" />
       </button>
