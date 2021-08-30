@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { formBlock } from 'lib/types/form'
 import { ArrowRightIcon } from '@heroicons/react/outline'
+import toast, { Toaster } from 'react-hot-toast'
 
 const ViewFormPage: NextPage = () => {
   const router = useRouter()
@@ -16,16 +17,12 @@ const ViewFormPage: NextPage = () => {
   const { form, error, isLoading } = useFormFetch(`${id}`)
   const { register, handleSubmit } = useForm()
 
-  if (isLoading) {
-    return <h1>Loading</h1>
-  }
-
-  if (error) {
-    return <h1>An error has ocurred</h1>
-  }
+  if (isLoading) return <p>Loading</p>
+  if (error) return <p>Error</p>
 
   return (
     <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden">
+      <Toaster />
       <Head>
         <title>{form.title ? form.title : 'Untitled form'}</title>
         <link rel="icon" href={form.header.icon} />
@@ -96,7 +93,19 @@ const ViewFormPage: NextPage = () => {
           </h1>
           <form
             onSubmit={handleSubmit((data) => {
-              console.log(data)
+              const submitForm = fetch(`/api/forms/${id}/responses`, {
+                method: 'POST',
+                body: JSON.stringify({ responses: data, formID: id }),
+              })
+              toast
+                .promise(submitForm, {
+                  loading: 'Submitting responses',
+                  success: 'Responses have been saved',
+                  error: 'Error while submitting responses',
+                })
+                .then(() => {
+                  // redirect to thank you page
+                })
             })}
           >
             {form.blocks.map((block: formBlock) => (
