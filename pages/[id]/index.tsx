@@ -37,6 +37,7 @@ const FormDashboard: NextPage = () => {
     )
   }
   if (formError || responsesError || error) {
+    console.error(formError || responsesError || error)
     return (
       <OverlayPage
         title="Error"

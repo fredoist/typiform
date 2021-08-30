@@ -112,6 +112,7 @@ const ViewFormPage: NextPage = () => {
           </h1>
           {!form.options.lockedResponses ? (
             <form
+              className="pb-20"
               onSubmit={handleSubmit((data) => {
                 const submitForm = fetch(`/api/forms/${id}/responses`, {
                   method: 'POST',

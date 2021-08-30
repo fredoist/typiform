@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0'
+import { withApiAuthRequired } from '@auth0/nextjs-auth0'
 
 const INSTANCE = process.env.HARPERDB_URL
 const TOKEN = process.env.HARPERDB_TOKEN
@@ -11,12 +11,6 @@ export default withApiAuthRequired(async function handler(
   if (req.method !== 'PATCH') {
     res.setHeader('Allow', ['PATCH'])
     res.status(405).end(`Method ${req.method} not allowed`)
-  }
-
-  const { user }: any = getSession(req, res)
-
-  if (user?.sub !== req.body.workspace) {
-    res.status(403).end(`You're not permitted to complete this action`)
   }
 
   const body = JSON.parse(req.body)
