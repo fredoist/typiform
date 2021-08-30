@@ -248,9 +248,6 @@ const FormDashboard: NextPage = () => {
                 >
                   Delete form
                 </button>
-                <span className="text-sm text-gray-500">
-                  Stop receiving responses for this form
-                </span>
               </div>
             </Tab.Panel>
           </Tab.Panels>
