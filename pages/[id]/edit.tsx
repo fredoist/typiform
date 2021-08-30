@@ -19,6 +19,7 @@ import {
   titleAtom,
 } from 'lib/atoms/form'
 import { useFormFetch } from 'lib/hooks/useFormFetch'
+import { mutate } from 'swr'
 
 const EditPage: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -82,7 +83,8 @@ const EditPage: NextPage = () => {
               })
               .then((res) => res.json())
               .then(({ id }) => {
-                router.push(`/${id}/edit`)
+                mutate(`/api/forms/${id}`)
+                mutate(`/api/forms/user/${user?.sub}`)
               })
           }}
         />

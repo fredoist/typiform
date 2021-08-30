@@ -1,13 +1,19 @@
 import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import cx from 'classnames'
+import { mutate } from 'swr'
 import { useUser } from '@auth0/nextjs-auth0'
-import { Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/router'
 import {
   DocumentTextIcon,
+  DotsHorizontalIcon,
   LoginIcon,
   PlusIcon,
   SearchIcon,
+  TrashIcon,
 } from '@heroicons/react/outline'
 
 import { useFetchAll } from 'lib/hooks/useFetchAll'
@@ -15,6 +21,7 @@ import { useFetchAll } from 'lib/hooks/useFetchAll'
 const Sidebar = ({ show }: { show: boolean }) => {
   const { user } = useUser()
   const { forms } = useFetchAll(user?.sub)
+  const router = useRouter()
   const [userForms, setUserForms] = React.useState([])
 
   React.useEffect(() => {
@@ -80,25 +87,79 @@ const Sidebar = ({ show }: { show: boolean }) => {
             </div>
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               {userForms &&
-                userForms.map((form: any) => (
-                  <Link key={form.id} href={`/${form.id}/edit`}>
-                    <a className="py-2 px-4 hover:bg-gray-200 flex items-center gap-2">
-                      {form.header.icon ? (
-                        <Image
-                          src={form.header.icon}
-                          alt="Icon"
-                          width={18}
-                          height={18}
-                          unoptimized={true}
-                        />
-                      ) : (
-                        <DocumentTextIcon className="icon text-gray-500" />
-                      )}
-                      <span className="block truncate">
-                        {form.title ? form.title : 'Untitled form'}
-                      </span>
-                    </a>
-                  </Link>
+                userForms.map((form: any, key: number) => (
+                  <div
+                    key={form.id}
+                    className="flex items-center hover:bg-gray-200"
+                  >
+                    <Link href={`/${form.id}/edit`}>
+                      <a className="py-2 px-4 flex items-center gap-2 flex-1">
+                        {form.header.icon ? (
+                          <Image
+                            src={form.header.icon}
+                            alt="Icon"
+                            width={18}
+                            height={18}
+                            unoptimized={true}
+                          />
+                        ) : (
+                          <DocumentTextIcon className="icon text-gray-500" />
+                        )}
+                        <span className="block truncate">
+                          {form.title ? form.title : 'Untitled form'}
+                        </span>
+                      </a>
+                    </Link>
+                    <Menu as="div" className="relative">
+                      <Menu.Button className="p-2">
+                        <span className="sr-only">Show form options</span>
+                        <DotsHorizontalIcon className="icon" />
+                      </Menu.Button>
+                      <Transition
+                        as={React.Fragment}
+                        enter="transition duration-200"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition duration-95"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                      >
+                        <Menu.Items className="absolute right-0 shadow-lg bg-white ring-1 ring-black/10 rounded z-50 py-2">
+                          <Menu.Item as={React.Fragment}>
+                            {({ active }) => (
+                              <button
+                                className={cx(
+                                  'py-2 px-4 hover:bg-gray-100 flex items-center gap-2',
+                                  { 'bg-gray-100': active }
+                                )}
+                                onClick={() => {
+                                  const deleteForm = fetch(
+                                    `/api/forms/${form.id}`,
+                                    {
+                                      method: 'DELETE',
+                                    }
+                                  )
+                                  toast
+                                    .promise(deleteForm, {
+                                      loading: `Deleting form`,
+                                      success: `Form has been deleted`,
+                                      error: `Error while deleting form`,
+                                    })
+                                    .then(() => {
+                                      mutate(`/api/forms/user/${user.sub}`)
+                                      router.push(`/${forms[0].id}/edit`)
+                                    })
+                                }}
+                              >
+                                <TrashIcon className="icon text-gray-500" />
+                                <span>Delete</span>
+                              </button>
+                            )}
+                          </Menu.Item>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
                 ))}
             </div>
             <div>

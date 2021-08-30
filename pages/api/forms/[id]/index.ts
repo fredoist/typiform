@@ -41,8 +41,23 @@ export default async function handler(
     })
     const response = await request.json()
     res.status(200).json({ id: response.update_hashes[0] })
+  } else if (req.method === 'DELETE') {
+    const request = await fetch(`${INSTANCE}`, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${TOKEN}`,
+      },
+      body: JSON.stringify({
+        operation: 'sql',
+        sql: `DELETE FROM typiform.forms WHERE id='${id}'`,
+      }),
+    })
+    const response = await request.json()
+    res.status(200).json(response)
   } else {
-    res.setHeader('Allow', ['GET', 'PATCH'])
+    res.setHeader('Allow', ['GET', 'PATCH', 'DELETE'])
     res.status(405).end(`Method ${req.method} not allowed`)
   }
 }
