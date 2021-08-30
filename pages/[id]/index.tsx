@@ -136,8 +136,8 @@ const FormDashboard: NextPage = () => {
               <div>Summary Tab</div>
             </Tab.Panel> */}
             <Tab.Panel>
-              <div className="overflow-x-auto w-full custom-scrollbar">
-                {responses && (
+              {responses.length > 0 ? (
+                <div className="overflow-x-auto w-full custom-scrollbar">
                   <table className="w-full table">
                     <thead className="border-b border-gray-200">
                       <th className="p-2 text-left">Date</th>
@@ -172,8 +172,10 @@ const FormDashboard: NextPage = () => {
                       })}
                     </tbody>
                   </table>
-                )}
-              </div>
+                </div>
+              ) : (
+                <p>There are no responses yet</p>
+              )}
             </Tab.Panel>
             <Tab.Panel>
               <div className="max-w-md">
