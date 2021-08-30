@@ -32,7 +32,7 @@ const Sidebar = ({ show }: { show: boolean }) => {
       leaveFrom="translate-x-0"
       leaveTo="-translate-x-full"
     >
-      <aside className="w-4/5 lg:w-1/5 bg-gray-50 flex flex-col">
+      <aside className="w-4/5 md:w-2/5 lg:w-1/5 bg-gray-50 flex flex-col">
         <div></div>
         {!user ? (
           <div className="p-4">
@@ -81,7 +81,7 @@ const Sidebar = ({ show }: { show: boolean }) => {
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               {userForms &&
                 userForms.map((form: any) => (
-                  <Link key={form.id} href={`/${form.id}/viewform`}>
+                  <Link key={form.id} href={`/${form.id}/edit`}>
                     <a className="py-2 px-4 hover:bg-gray-200 flex items-center gap-2">
                       {form.header.icon ? (
                         <Image
@@ -94,16 +94,21 @@ const Sidebar = ({ show }: { show: boolean }) => {
                       ) : (
                         <DocumentTextIcon className="icon text-gray-500" />
                       )}
-                      <span className="block truncate">{form.title}</span>
+                      <span className="block truncate">
+                        {form.title ? form.title : 'Untitled form'}
+                      </span>
                     </a>
                   </Link>
                 ))}
             </div>
             <div>
-              <button className="flex items-center gap-2 px-2 py-3 w-full border-t border-gray-300 hover:bg-gray-100 transition-colors">
+              <a
+                href="/create"
+                className="flex items-center gap-2 px-2 py-3 w-full border-t border-gray-300 hover:bg-gray-100 transition-colors"
+              >
                 <PlusIcon className="icon" />
                 <span>Create new form</span>
-              </button>
+              </a>
             </div>
           </React.Fragment>
         )}

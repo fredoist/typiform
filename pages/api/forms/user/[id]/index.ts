@@ -21,7 +21,7 @@ export default withApiAuthRequired(async function handler(
     },
     body: JSON.stringify({
       operation: 'sql',
-      sql: `SELECT * FROM typiform.forms WHERE workspace='${req.query.id}'`,
+      sql: `SELECT * FROM typiform.forms WHERE workspace='${req.query.id}' ORDER BY __createdtime__ ASC`,
     }),
   })
   const response = await request.json()

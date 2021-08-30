@@ -30,19 +30,18 @@ const EditorNavbar = ({
   style,
   options,
   toggleSidebar,
+  onPublish,
 }: {
   title: string | null
   icon: string | undefined
   style: formStyle
   options: formOptions
   toggleSidebar: React.Dispatch<React.SetStateAction<boolean>>
+  onPublish: React.MouseEventHandler<HTMLButtonElement>
 }) => {
-  const router = useRouter()
   const [, setStyle] = useAtom(styleAtom)
   const [, setOptions] = useAtom(optionsAtom)
-  const [header] = useAtom(headerAtom)
-  const [blocks] = useAtom(blocksAtom)
-  const { user, error, isLoading } = useUser()
+  const { user } = useUser()
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -178,34 +177,7 @@ const EditorNavbar = ({
           </Popover.Panel>
         </Transition>
       </Popover>
-      <button
-        className="btn btn-primary"
-        onClick={() => {
-          const request = fetch(`/api/forms`, {
-            method: 'POST',
-            body: JSON.stringify({
-              title: title,
-              workspace: user?.sub,
-              style: style,
-              header: header,
-              options: !user
-                ? { publicResponses: true, lockedResponses: false }
-                : options,
-              blocks: blocks,
-            }),
-          })
-          toast
-            .promise(request, {
-              loading: `Wait, we're publishing your form`,
-              success: 'Redirecting to form view',
-              error: 'Error creating form',
-            })
-            .then((res) => res.json())
-            .then(({ id }) => {
-              router.push(`/${id}/viewform`)
-            })
-        }}
-      >
+      <button className="btn btn-primary" onClick={onPublish}>
         <span>Publish</span>
         <ArrowRightIcon className="icon" />
       </button>

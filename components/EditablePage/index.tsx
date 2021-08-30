@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useRouter } from 'next/router'
 import { useAtom } from 'jotai'
 import cx from 'classnames'
 import ReactDragListView from 'react-drag-listview'
@@ -9,6 +10,7 @@ import { titleAtom } from 'lib/atoms/form'
 import { formBlock, formStyle } from 'lib/types/form'
 import { placeCaretAtEnd } from 'lib/utils/placeCaretAtEnd'
 import { useBlocks } from 'lib/hooks/useBlocks'
+import { useFormFetch } from 'lib/hooks/useFormFetch'
 
 const EditablePage = ({
   title,
@@ -19,6 +21,9 @@ const EditablePage = ({
   blocks: formBlock[]
   style: formStyle
 }) => {
+  const router = useRouter()
+  const { id } = router.query
+  const { form } = useFormFetch(`${id}`)
   const [, setTitle] = useAtom(titleAtom)
   const [isCommand, setIsCommand] = React.useState<boolean>(false)
   const [latestBlock, setLatestBlock] = React.useState<formBlock | null>(null)
@@ -131,23 +136,25 @@ const EditablePage = ({
             setTitle(null)
           }
         }}
-      />
+      >
+        {form && form.title}
+      </div>
       <ReactDragListView
         nodeSelector="div.draggable-block"
         handleSelector="button.draggable-block-button"
         lineClassName="draggable-block-line"
         onDragEnd={moveBlock}
       >
-        {blocks.map((block) => (
+        {blocks.map((block, index) => (
           <EditableBlock
             key={block.id}
             setIsCommand={setIsCommand}
             block={block}
+            fetchedBlock={form && form.blocks[index]}
             setLatestBlock={setLatestBlock}
           />
         ))}
       </ReactDragListView>
-      <div className="h-60"></div>
     </div>
   )
 }

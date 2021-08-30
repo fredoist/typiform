@@ -18,10 +18,12 @@ const EditableBlock = ({
   setIsCommand,
   block,
   setLatestBlock,
+  fetchedBlock,
 }: {
   setIsCommand: any
   block: formBlock
   setLatestBlock: any
+  fetchedBlock: formBlock
 }) => {
   const [blocks, setBlocks] = useAtom(blocksAtom)
   const [LIIndex, setLIIndex] = React.useState<number>(0)
@@ -196,7 +198,7 @@ const EditableBlock = ({
           contentEditable: true,
           className: cx(block.props?.className, 'my-2 focus:outline-none', {
             'before:!content-[attr(placeholder)] before:text-gray-300 before:cursor-text':
-              showPlaceholder,
+              showPlaceholder && !block.value,
             'before:text-opacity-0 group-focus-within:before:text-opacity-100 group-hover:before:text-opacity-100 before:transition-opacity':
               block.tag === 'p',
             'text-gray-400': ['input', 'textarea'].includes(block.tag),
@@ -243,7 +245,7 @@ const EditableBlock = ({
             }
           },
         },
-        null
+        fetchedBlock ? fetchedBlock.value : null
       )}
       <div ref={ULRef}>
         <Transition

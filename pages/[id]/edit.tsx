@@ -1,15 +1,16 @@
 import * as React from 'react'
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+import { NextPage } from 'next'
 import { useAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
 import toast from 'react-hot-toast'
 import { useUser } from '@auth0/nextjs-auth0'
 
+import { Sidebar } from 'components/Sidebar'
 import { EditorNavbar } from 'components/EditorNavbar'
 import { EditorHeader } from 'components/EditorHeader'
 import { EditablePage } from 'components/EditablePage'
+import { sidebarAtom } from 'pages/create'
 import {
   blocksAtom,
   headerAtom,
@@ -17,19 +18,29 @@ import {
   styleAtom,
   titleAtom,
 } from 'lib/atoms/form'
-import { Sidebar } from 'components/Sidebar'
+import { useFormFetch } from 'lib/hooks/useFormFetch'
 
-export const sidebarAtom = atomWithStorage('showSidebar', false)
-
-const CreatePage: NextPage = () => {
+const EditPage: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
-  const [title] = useAtom(titleAtom)
-  const [header] = useAtom(headerAtom)
-  const [style] = useAtom(styleAtom)
-  const [options] = useAtom(optionsAtom)
-  const [blocks] = useAtom(blocksAtom)
-  const { user } = useUser()
+  const [title, setTitle] = useAtom(titleAtom)
+  const [header, setHeader] = useAtom(headerAtom)
+  const [style, setStyle] = useAtom(styleAtom)
+  const [options, setOptions] = useAtom(optionsAtom)
+  const [blocks, setBlocks] = useAtom(blocksAtom)
   const router = useRouter()
+  const { id } = router.query
+  const { form } = useFormFetch(`${id}`)
+  const { user } = useUser()
+
+  React.useEffect(() => {
+    if (form) {
+      setTitle(form.title)
+      setHeader(form.header)
+      setStyle(form.style)
+      setOptions(form.options)
+      setBlocks(form.blocks)
+    }
+  }, [form, setTitle, setHeader, setStyle, setOptions, setBlocks])
 
   return (
     <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden flex">
@@ -49,9 +60,10 @@ const CreatePage: NextPage = () => {
           options={options}
           toggleSidebar={toggleSidebar}
           onPublish={() => {
-            const request = fetch(`/api/forms`, {
-              method: 'POST',
+            const request = fetch(`/api/forms/${id}`, {
+              method: 'PATCH',
               body: JSON.stringify({
+                id: id,
                 title: title,
                 workspace: user?.sub,
                 style: style,
@@ -65,8 +77,8 @@ const CreatePage: NextPage = () => {
             toast
               .promise(request, {
                 loading: `Wait, we're publishing your form`,
-                success: 'Redirecting to form view',
-                error: 'Error creating form',
+                success: 'Changes were published',
+                error: 'Error updating form',
               })
               .then((res) => res.json())
               .then(({ id }) => {
@@ -81,4 +93,4 @@ const CreatePage: NextPage = () => {
   )
 }
 
-export default CreatePage
+export default EditPage
