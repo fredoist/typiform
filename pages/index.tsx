@@ -25,10 +25,16 @@ const IndexPage: NextPage = () => {
     <main role="main" className="lg:flex flex-row-reverse h-screen">
       <Head>
         <title>Easy online form builder that works like a doc - Typiform</title>
+        <link rel="icon" href="/icon.svg" />
       </Head>
       <div className="lg:w-1/4">
-        <div className="flex p-4 items-center justify-between">
-          <strong>Typiform</strong>
+        <div className="flex px-4 py-6 items-center justify-between">
+          <Link href="/">
+            <a>
+              <span className="sr-only">Typiform</span>
+              <Image src="/logo.svg" width={95} height={24} alt="Typiform" />
+            </a>
+          </Link>
           <a className="btn" href="/api/auth/login?returnTo=/create">
             <span>Log In</span>
             <LoginIcon className="icon" />

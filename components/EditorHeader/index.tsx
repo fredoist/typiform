@@ -402,7 +402,10 @@ const EditorHeader = ({
             <button
               className="btn"
               onClick={() => {
-                setHeader((state) => ({ ...state, icon: '/icon.png' }))
+                setHeader((state) => ({
+                  ...state,
+                  icon: '/img/defaultIcon.svg',
+                }))
               }}
             >
               <EmojiHappyIcon className="icon" />
