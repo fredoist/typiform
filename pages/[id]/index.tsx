@@ -268,7 +268,7 @@ const FormDashboard: NextPage = () => {
                     if (
                       confirm('Are you shure you want to delete this form?')
                     ) {
-                      const deleteForm = fetch(`/api/forms/${id}`, {
+                      const deleteForm = fetch(`/api/forms/${id}/delete`, {
                         method: 'DELETE',
                       })
                       toast

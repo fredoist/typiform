@@ -189,9 +189,12 @@ const EditorNavbar = ({
               <button
                 className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
                 onClick={() => {
-                  const deleteForm = fetch(`/api/forms/${router.query.id}`, {
-                    method: 'DELETE',
-                  })
+                  const deleteForm = fetch(
+                    `/api/forms/${router.query.id}/delete`,
+                    {
+                      method: 'DELETE',
+                    }
+                  )
                   toast
                     .promise(deleteForm, {
                       loading: `Deleting form`,

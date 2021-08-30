@@ -76,7 +76,7 @@ const EditPage: NextPage = () => {
           options={options}
           toggleSidebar={toggleSidebar}
           onPublish={() => {
-            const request = fetch(`/api/forms/${id}`, {
+            const request = fetch(`/api/forms/${id}/update`, {
               method: 'PATCH',
               body: JSON.stringify({
                 id: id,

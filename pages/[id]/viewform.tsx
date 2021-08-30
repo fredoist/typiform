@@ -33,7 +33,10 @@ const ViewFormPage: NextPage = () => {
       <Toaster />
       <Head>
         <title>{form.title ? form.title : 'Untitled form'}</title>
-        <link rel="icon" href={form.header.icon} />
+        <link
+          rel="icon"
+          href={form.header.icon ? form.header.icon : '/img/defaultIcon.svg'}
+        />
       </Head>
       <section className="w-screen h-screen overflow-y-auto">
         <header className="relative">

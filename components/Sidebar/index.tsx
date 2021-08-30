@@ -187,7 +187,7 @@ const Sidebar = ({ show }: { show: boolean }) => {
                                 )}
                                 onClick={() => {
                                   const deleteForm = fetch(
-                                    `/api/forms/${form.id}`,
+                                    `/api/forms/${form.id}/delete`,
                                     {
                                       method: 'DELETE',
                                     }
