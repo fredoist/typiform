@@ -6,8 +6,8 @@ function useFetchAll(userID: string | null | undefined) {
 
   return {
     forms: data,
-    error: error,
-    isLoading: !data && !error,
+    formsError: error,
+    isLoadingForms: !data && !error,
   }
 }
 

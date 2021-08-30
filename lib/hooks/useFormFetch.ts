@@ -7,8 +7,8 @@ function useFormFetch(id?: string) {
 
   return {
     form: data,
-    isLoading: !data && !error,
-    error: error,
+    isLoadingForm: !data && !error,
+    formError: error,
   }
 }
 

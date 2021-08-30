@@ -6,8 +6,8 @@ function useResponses(formID: string) {
 
   return {
     responses: data,
-    error: error,
-    isLoading: !data && !error,
+    responsesError: error,
+    isLoadingResponses: !data && !error,
   }
 }
 
