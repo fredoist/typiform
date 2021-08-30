@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
 import * as React from 'react'
+import Image from 'next/image'
 import Head from 'next/head'
 import Link from 'next/link'
 import cx from 'classnames'
@@ -10,13 +11,11 @@ import { useRouter } from 'next/router'
 import { useAtom } from 'jotai'
 import { sidebarAtom } from 'pages/create'
 import { Tab } from '@headlessui/react'
-import { PencilIcon } from '@heroicons/react/outline'
+import { MenuIcon, PencilIcon } from '@heroicons/react/outline'
 import { useResponses } from 'lib/hooks/useResponses'
 import { LabelSwitch } from 'components/LabelSwitch'
 import { mutate } from 'swr'
 import toast, { Toaster } from 'react-hot-toast'
-import { optionsAtom } from 'lib/atoms/form'
-import { EditorNavbar } from 'components/EditorNavbar'
 
 const FormDashboard: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -55,33 +54,22 @@ const FormDashboard: NextPage = () => {
       </Head>
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
-        <EditorNavbar
-          title={form.title}
-          icon={form.header.icon}
-          style={form.style}
-          options={form.options}
-          toggleSidebar={toggleSidebar}
-          onPublish={() => {
-            const request = fetch(`/api/forms/${id}`, {
-              method: 'PATCH',
-              body: JSON.stringify({
-                ...form,
-              }),
-            })
-            toast
-              .promise(request, {
-                loading: `Wait, we're publishing your form`,
-                success: 'Changes were published',
-                error: 'Error updating form',
-              })
-              .then((res) => res.json())
-              .then(({ id }) => {
-                mutate(`/api/forms/user/${user?.sub}`)
-                mutate(`/api/forms/${id}`)
-              })
-          }}
-        />
+        <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
+          <button
+            className="btn"
+            onClick={() => toggleSidebar((prev) => !prev)}
+          >
+            <span className="sr-only">Toggle sidebar</span>
+            <MenuIcon className="icon" />
+          </button>
+        </nav>
         <header className="p-4 lg:p-8 flex items-center gap-2">
+          <Image
+            src={form.header.icon ? form.header.icon : '/img/defaultIcon.svg'}
+            alt="Icon"
+            width={30}
+            height={30}
+          />
           <h2 className="font-bold text-2xl flex-1 truncate">
             {form.title ? form.title : 'Untitled form'}
           </h2>
