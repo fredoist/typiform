@@ -18,18 +18,27 @@ import {
   titleAtom,
 } from 'lib/atoms/form'
 import { Sidebar } from 'components/Sidebar'
+import { mutate } from 'swr'
 
 export const sidebarAtom = atomWithStorage('showSidebar', false)
 
 const CreatePage: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
-  const [title] = useAtom(titleAtom)
-  const [header] = useAtom(headerAtom)
-  const [style] = useAtom(styleAtom)
-  const [options] = useAtom(optionsAtom)
-  const [blocks] = useAtom(blocksAtom)
+  const [title, setTitle] = useAtom(titleAtom)
+  const [header, setHeader] = useAtom(headerAtom)
+  const [style, setStyle] = useAtom(styleAtom)
+  const [options, setOptions] = useAtom(optionsAtom)
+  const [blocks, setBlocks] = useAtom(blocksAtom)
   const { user } = useUser()
   const router = useRouter()
+
+  React.useEffect(() => {
+    setTitle(null)
+    setHeader({ icon: undefined, cover: undefined })
+    setStyle({ fontStyle: 'font-sans', fullWidth: false, smallText: false })
+    setOptions({ lockedResponses: false, publicResponses: false })
+    setBlocks([])
+  }, [setTitle, setHeader, setStyle, setOptions, setBlocks])
 
   return (
     <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden flex">
@@ -71,6 +80,8 @@ const CreatePage: NextPage = () => {
               .then((res) => res.json())
               .then(({ id }) => {
                 router.push(`/${id}/edit`)
+                mutate(`/api/forms/${id}`)
+                if (user) mutate(`/api/forms/${user?.sub}`)
               })
           }}
         />

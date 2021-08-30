@@ -14,11 +14,19 @@ import toast, { Toaster } from 'react-hot-toast'
 const ViewFormPage: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
-  const { form, error, isLoading } = useFormFetch(`${id}`)
+  const { form, formError, isLoadingForm } = useFormFetch(`${id}`)
   const { register, handleSubmit } = useForm()
 
-  if (isLoading) return <p>Loading</p>
-  if (error) return <p>Error</p>
+  if (isLoadingForm) {
+    return <p>Loading</p>
+  }
+  if (formError) {
+    return (
+      <pre>
+        <code>{JSON.stringify(formError)}</code>
+      </pre>
+    )
+  }
 
   return (
     <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden">
@@ -91,42 +99,46 @@ const ViewFormPage: NextPage = () => {
           >
             {form.title}
           </h1>
-          <form
-            onSubmit={handleSubmit((data) => {
-              const submitForm = fetch(`/api/forms/${id}/responses`, {
-                method: 'POST',
-                body: JSON.stringify({ data: data, formID: id }),
-              })
-              toast
-                .promise(submitForm, {
-                  loading: 'Submitting responses',
-                  success: 'Responses have been saved',
-                  error: 'Error while submitting responses',
+          {!form.options.lockedResponses ? (
+            <form
+              onSubmit={handleSubmit((data) => {
+                const submitForm = fetch(`/api/forms/${id}/responses`, {
+                  method: 'POST',
+                  body: JSON.stringify({ data: data, formID: id }),
                 })
-                .then(() => {
-                  // redirect to thank you page
-                })
-            })}
-          >
-            {form.blocks.map((block: formBlock) => (
-              <div key={block.id} className="my-2">
-                {['textarea', 'input'].includes(block.tag)
-                  ? React.createElement(block.tag, {
-                      ...block.props,
-                      placeholder: block.value,
-                      ...register(`${block.id}`, { required: true }),
-                    })
-                  : React.createElement(block.tag, block.props, block.value)}
-              </div>
-            ))}
-            <button
-              type="submit"
-              className="btn btn-primary py-2 focus:ring-4 focus:ring-red-500/40 focus:outline-none mt-12"
+                toast
+                  .promise(submitForm, {
+                    loading: 'Submitting responses',
+                    success: 'Responses have been saved',
+                    error: 'Error while submitting responses',
+                  })
+                  .then(() => {
+                    // redirect to thank you page
+                  })
+              })}
             >
-              <span>Submit</span>
-              <ArrowRightIcon className="icon" />
-            </button>
-          </form>
+              {form.blocks.map((block: formBlock) => (
+                <div key={block.id} className="my-2">
+                  {['textarea', 'input'].includes(block.tag)
+                    ? React.createElement(block.tag, {
+                        ...block.props,
+                        placeholder: block.value,
+                        ...register(`${block.id}`, { required: true }),
+                      })
+                    : React.createElement(block.tag, block.props, block.value)}
+                </div>
+              ))}
+              <button
+                type="submit"
+                className="btn btn-primary py-2 focus:ring-4 focus:ring-red-500/40 focus:outline-none mt-12"
+              >
+                <span>Submit</span>
+                <ArrowRightIcon className="icon" />
+              </button>
+            </form>
+          ) : (
+            <p>This form no longer accepts responses</p>
+          )}
         </div>
       </section>
       <a

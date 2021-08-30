@@ -30,8 +30,8 @@ const EditPage: NextPage = () => {
   const [blocks, setBlocks] = useAtom(blocksAtom)
   const router = useRouter()
   const { id } = router.query
-  const { form } = useFormFetch(`${id}`)
-  const { user } = useUser()
+  const { form, isLoadingForm, formError } = useFormFetch(`${id}`)
+  const { user, error, isLoading } = useUser()
 
   React.useEffect(() => {
     if (form) {
@@ -42,6 +42,21 @@ const EditPage: NextPage = () => {
       setBlocks(form.blocks)
     }
   }, [form, setTitle, setHeader, setStyle, setOptions, setBlocks])
+
+  if (isLoading || isLoadingForm) {
+    return <p>Loading...</p>
+  }
+  if (error || formError) {
+    return (
+      <pre>
+        <code>{JSON.stringify(error || formError)}</code>
+      </pre>
+    )
+  }
+
+  if (form.workspace !== user?.sub) {
+    return <p>You are not allowed to view this page</p>
+  }
 
   return (
     <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden flex">

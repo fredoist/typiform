@@ -1,13 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0'
 
 const INSTANCE = process.env.HARPERDB_URL
 const TOKEN = process.env.HARPERDB_TOKEN
 
-export default async function handler(
+export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { id } = req.query
+  const { user }: any = getSession(req, res)
+
   if (req.method === 'GET') {
     const request = await fetch(`${INSTANCE}`, {
       method: 'POST',
@@ -18,7 +21,7 @@ export default async function handler(
       },
       body: JSON.stringify({
         operation: 'sql',
-        sql: `SELECT * FROM typiform.forms WHERE id='${id}'`,
+        sql: `SELECT * FROM typiform.forms WHERE id='${id}' AND workspace='${user?.sub}'`,
       }),
     })
     const response = await request.json()
@@ -51,7 +54,7 @@ export default async function handler(
       },
       body: JSON.stringify({
         operation: 'sql',
-        sql: `DELETE FROM typiform.forms WHERE id='${id}'`,
+        sql: `DELETE FROM typiform.forms WHERE id='${id}' AND workspace='${user?.sub}'`,
       }),
     })
     const response = await request.json()
@@ -60,4 +63,4 @@ export default async function handler(
     res.setHeader('Allow', ['GET', 'PATCH', 'DELETE'])
     res.status(405).end(`Method ${req.method} not allowed`)
   }
-}
+})

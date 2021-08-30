@@ -32,7 +32,15 @@ const FormDashboard: NextPage = () => {
     return <p>Loading</p>
   }
   if (formError || responsesError || error) {
-    return <p>Error</p>
+    return (
+      <pre>
+        <code>{JSON.stringify(error || formError || responsesError)}</code>
+      </pre>
+    )
+  }
+
+  if (form.workspace !== user?.sub) {
+    return <p>You are not allowed to view this page</p>
   }
 
   return (
@@ -68,8 +76,8 @@ const FormDashboard: NextPage = () => {
               })
               .then((res) => res.json())
               .then(({ id }) => {
-                mutate(`/api/forms/${id}`)
                 mutate(`/api/forms/user/${user?.sub}`)
+                mutate(`/api/forms/${id}`)
               })
           }}
         />
@@ -269,9 +277,9 @@ const FormDashboard: NextPage = () => {
                           success: `Form has been deleted`,
                           error: `Error while deleting form`,
                         })
-                        .then(() => {
+                        .then(async () => {
+                          await router.push(`/create`)
                           mutate(`/api/forms/user/${user?.sub}`)
-                          router.push(`/${id}/edit`)
                         })
                     }
                   }}

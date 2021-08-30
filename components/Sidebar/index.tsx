@@ -10,7 +10,9 @@ import { useRouter } from 'next/router'
 import {
   DocumentTextIcon,
   DotsHorizontalIcon,
+  DuplicateIcon,
   LoginIcon,
+  LogoutIcon,
   PlusIcon,
   SearchIcon,
   TrashIcon,
@@ -19,14 +21,21 @@ import {
 import { useFetchAll } from 'lib/hooks/useFetchAll'
 
 const Sidebar = ({ show }: { show: boolean }) => {
-  const { user } = useUser()
-  const { forms } = useFetchAll(user?.sub)
+  const { user, isLoading, error } = useUser()
+  const { forms, isLoadingForms, formsError } = useFetchAll(user?.sub)
   const router = useRouter()
   const [userForms, setUserForms] = React.useState([])
 
   React.useEffect(() => {
     setUserForms(forms)
   }, [forms])
+
+  if (isLoading || isLoadingForms) {
+    return null
+  }
+  if (formsError || error) {
+    return <p>Error</p>
+  }
 
   return (
     <Transition
@@ -40,7 +49,15 @@ const Sidebar = ({ show }: { show: boolean }) => {
       leaveTo="-translate-x-full"
     >
       <aside className="w-4/5 md:w-2/5 lg:w-1/5 bg-gray-50 flex flex-col">
-        <div></div>
+        <div className="flex items-center justify-between p-4">
+          <strong>Typiform</strong>
+          {user && (
+            <a href="/api/auth/logout" className="btn text-sm">
+              <span>Log Out</span>
+              <LogoutIcon className="icon text-gray-500" />
+            </a>
+          )}
+        </div>
         {!user ? (
           <div className="p-4">
             <div className="bg-gray-100 p-4 rounded border border-gray-200">
@@ -87,13 +104,13 @@ const Sidebar = ({ show }: { show: boolean }) => {
             </div>
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               {userForms &&
-                userForms.map((form: any, key: number) => (
+                userForms.map((form: any) => (
                   <div
                     key={form.id}
-                    className="flex items-center hover:bg-gray-200"
+                    className="flex items-center hover:bg-gray-200 justify-between"
                   >
-                    <Link href={`/${form.id}/edit`}>
-                      <a className="py-2 px-4 flex items-center gap-2 flex-1">
+                    <Link href={`/${form.id}`}>
+                      <a className="py-2 px-4 flex items-center gap-2 truncate w-full">
                         {form.header.icon ? (
                           <Image
                             src={form.header.icon}
@@ -105,7 +122,7 @@ const Sidebar = ({ show }: { show: boolean }) => {
                         ) : (
                           <DocumentTextIcon className="icon text-gray-500" />
                         )}
-                        <span className="block truncate">
+                        <span className="w-full truncate">
                           {form.title ? form.title : 'Untitled form'}
                         </span>
                       </a>
@@ -129,7 +146,43 @@ const Sidebar = ({ show }: { show: boolean }) => {
                             {({ active }) => (
                               <button
                                 className={cx(
-                                  'py-2 px-4 hover:bg-gray-100 flex items-center gap-2',
+                                  'py-2 px-4 hover:bg-gray-100 flex items-center gap-2 w-full',
+                                  { 'bg-gray-100': active }
+                                )}
+                                onClick={() => {
+                                  const duplicateForm = fetch(`/api/forms`, {
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                      ...form,
+                                      id: undefined,
+                                    }),
+                                  })
+                                  toast
+                                    .promise(duplicateForm, {
+                                      loading: `Duplicating form`,
+                                      success: `Redirecting to edit page`,
+                                      error: `Error while duplicating form`,
+                                    })
+                                    .then((res) => res.json())
+                                    .then(({ id }) => {
+                                      mutate(
+                                        `/api/forms/user/${user.sub}`
+                                      ).then(() => {
+                                        router.push(`/${id}/edit`)
+                                      })
+                                    })
+                                }}
+                              >
+                                <DuplicateIcon className="icon text-gray-500" />
+                                <span>Duplicate</span>
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item as={React.Fragment}>
+                            {({ active }) => (
+                              <button
+                                className={cx(
+                                  'py-2 px-4 hover:bg-gray-100 flex items-center gap-2 w-full',
                                   { 'bg-gray-100': active }
                                 )}
                                 onClick={() => {
@@ -146,8 +199,11 @@ const Sidebar = ({ show }: { show: boolean }) => {
                                       error: `Error while deleting form`,
                                     })
                                     .then(() => {
-                                      mutate(`/api/forms/user/${user.sub}`)
-                                      router.push(`/${forms[0].id}/edit`)
+                                      mutate(
+                                        `/api/forms/user/${user.sub}`
+                                      ).then(() => {
+                                        router.push(`/${forms[0].id}`)
+                                      })
                                     })
                                 }}
                               >
@@ -163,13 +219,12 @@ const Sidebar = ({ show }: { show: boolean }) => {
                 ))}
             </div>
             <div>
-              <a
-                href="/create"
-                className="flex items-center gap-2 px-2 py-3 w-full border-t border-gray-300 hover:bg-gray-100 transition-colors"
-              >
-                <PlusIcon className="icon" />
-                <span>Create new form</span>
-              </a>
+              <Link href="/create">
+                <a className="flex items-center gap-2 px-2 py-3 w-full border-t border-gray-300 hover:bg-gray-100 transition-colors">
+                  <PlusIcon className="icon" />
+                  <span>Create new form</span>
+                </a>
+              </Link>
             </div>
           </React.Fragment>
         )}
