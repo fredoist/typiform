@@ -10,6 +10,7 @@ import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { formBlock } from 'lib/types/form'
 import { ArrowRightIcon } from '@heroicons/react/outline'
 import toast, { Toaster } from 'react-hot-toast'
+import { sanitize } from 'lib/utils/sanitize'
 
 const ViewFormPage: NextPage = () => {
   const router = useRouter()
@@ -127,8 +128,14 @@ const ViewFormPage: NextPage = () => {
                         ...block.props,
                         placeholder: block.value,
                         ...register(
-                          `${block.value ? block.value : block.placeholder}`,
-                          { required: true }
+                          `${
+                            block.value
+                              ? sanitize(block.value)
+                              : 'Untitled question'
+                          }`,
+                          {
+                            required: true,
+                          }
                         ),
                       })
                     : React.createElement(block.tag, block.props, block.value)}

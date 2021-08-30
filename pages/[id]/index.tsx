@@ -82,18 +82,6 @@ const FormDashboard: NextPage = () => {
         </header>
         <Tab.Group as="div" className="px-4 lg:px-8">
           <Tab.List className="border-b border-gray-200 flex gap-x-6">
-            {/* <Tab as={React.Fragment}>
-              {({ selected }) => (
-                <button
-                  className={cx('py-2 focus:outline-none border-b-2', {
-                    'border-black': selected,
-                    'border-transparent hover:border-gray-300': !selected,
-                  })}
-                >
-                  Summary
-                </button>
-              )}
-            </Tab> */}
             <Tab as={React.Fragment}>
               {({ selected }) => (
                 <button
@@ -132,9 +120,6 @@ const FormDashboard: NextPage = () => {
             </Tab>
           </Tab.List>
           <Tab.Panels className="py-4">
-            {/* <Tab.Panel>
-              <div>Summary Tab</div>
-            </Tab.Panel> */}
             <Tab.Panel>
               {responses.length > 0 ? (
                 <div className="overflow-x-auto w-full custom-scrollbar">
@@ -144,7 +129,7 @@ const FormDashboard: NextPage = () => {
                       {responses[0] &&
                         Object.entries(responses[0].data).map((o: any, k) => (
                           <th key={k} className="p-2 text-left">
-                            {o[0]}
+                            {o[0].replace('&#x27;', "'")}
                           </th>
                         ))}
                     </thead>

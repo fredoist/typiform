@@ -14,6 +14,7 @@ import { blocksAtom } from 'lib/atoms/form'
 import blockTypes from 'lib/blocks.json'
 import { formBlock } from 'lib/types/form'
 import { useBlocks } from 'lib/hooks/useBlocks'
+import { sanitize } from 'lib/utils/sanitize'
 
 const EditableBlock = ({
   setIsCommand,
@@ -226,7 +227,7 @@ const EditableBlock = ({
                   const i = next.findIndex((e) => e.id === block.id)
                   next[i] = {
                     ...block,
-                    value: content,
+                    value: content ? sanitize(content) : 'Untitled question',
                   }
                   return next
                 })
