@@ -19,6 +19,7 @@ export type formBlock = {
   id?: string
   placeholder?: string
   value?: string | null
+  icon: string
   props?: {
     className?: string // defined classes styling
     style?: React.CSSProperties // optional add style attribute

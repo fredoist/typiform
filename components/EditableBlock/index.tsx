@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useAtom } from 'jotai'
 import cx from 'classnames'
+import Image from 'next/image'
 import { Menu, Transition } from '@headlessui/react'
 import {
   DuplicateIcon,
@@ -290,6 +291,12 @@ const EditableBlock = ({
                     setShowBlockSelect(false)
                   }}
                 >
+                  <Image
+                    src={`/img/blocks/${option.icon}`}
+                    alt="Icon"
+                    width={20}
+                    height={20}
+                  />
                   <span>{option.label}</span>
                 </li>
               )

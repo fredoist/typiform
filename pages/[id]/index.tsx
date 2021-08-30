@@ -260,6 +260,9 @@ const FormDashboard: NextPage = () => {
                     ) {
                       const deleteForm = fetch(`/api/forms/${id}/delete`, {
                         method: 'DELETE',
+                        body: JSON.stringify({
+                          workspace: form.workspace,
+                        }),
                       })
                       toast
                         .promise(deleteForm, {
@@ -267,9 +270,8 @@ const FormDashboard: NextPage = () => {
                           success: `Form has been deleted`,
                           error: `Error while deleting form`,
                         })
-                        .then(async () => {
-                          await router.push(`/create`)
-                          mutate(`/api/forms/user/${user?.sub}`)
+                        .then(() => {
+                          router.push(`/create`)
                         })
                     }
                   }}

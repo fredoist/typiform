@@ -190,6 +190,9 @@ const Sidebar = ({ show }: { show: boolean }) => {
                                     `/api/forms/${form.id}/delete`,
                                     {
                                       method: 'DELETE',
+                                      body: JSON.stringify({
+                                        workspace: form.workspace,
+                                      }),
                                     }
                                   )
                                   toast

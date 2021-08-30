@@ -126,7 +126,10 @@ const ViewFormPage: NextPage = () => {
                     ? React.createElement(block.tag, {
                         ...block.props,
                         placeholder: block.value,
-                        ...register(`${block.id}`, { required: true }),
+                        ...register(
+                          `${block.value ? block.value : block.placeholder}`,
+                          { required: true }
+                        ),
                       })
                     : React.createElement(block.tag, block.props, block.value)}
                 </div>
