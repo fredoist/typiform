@@ -15,9 +15,7 @@ import {
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
-  const { user, error, isLoading } = useUser()
-  if (isLoading) return <h1>Loading</h1>
-  if (error) return <h1>Error</h1>
+  const { user } = useUser()
 
   if (user) {
     router.push(`/create`)
