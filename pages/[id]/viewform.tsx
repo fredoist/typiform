@@ -125,7 +125,7 @@ const ViewFormPage: NextPage = () => {
                     error: 'Error while submitting responses',
                   })
                   .then(() => {
-                    // redirect to thank you page
+                    router.push(`/${id}/thank-you`)
                   })
               })}
             >
