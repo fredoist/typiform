@@ -199,7 +199,7 @@ const FormDashboard: NextPage = () => {
                   label="Lock responses"
                   checked={form.options.lockedResponses}
                   onChange={(value) => {
-                    const updateForm = fetch(`/api/forms/${id}`, {
+                    const updateForm = fetch(`/api/forms/${id}/update`, {
                       method: 'PATCH',
                       body: JSON.stringify({
                         ...form,
