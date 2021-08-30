@@ -180,7 +180,23 @@ const FormDashboard: NextPage = () => {
               </div>
             </Tab.Panel>
             <Tab.Panel>
-              <div>Share Tab</div>
+              <div className="max-w-md">
+                <span className="text-sm block mb-2">
+                  Your form link (click to copy)
+                </span>
+                <input
+                  type="text"
+                  readOnly={true}
+                  className="p-2 focus:outline-none bg-gray-100 rounded w-full"
+                  value={`https://${window.location.host}/${id}/viewform`}
+                  onClick={(e) => {
+                    const target = e.target as HTMLInputElement
+                    target.select()
+                    navigator.clipboard.writeText(target.value)
+                    toast('Link copied to clipboard')
+                  }}
+                />
+              </div>
             </Tab.Panel>
             <Tab.Panel>
               <div className="max-w-md mb-2">
