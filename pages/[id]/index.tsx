@@ -184,33 +184,6 @@ const FormDashboard: NextPage = () => {
             <Tab.Panel>
               <div className="max-w-md mb-2">
                 <LabelSwitch
-                  label="Public responses"
-                  checked={form.options.publicResponses}
-                  onChange={(value) => {
-                    const updateForm = fetch(`/api/forms/${id}`, {
-                      method: 'PATCH',
-                      body: JSON.stringify({
-                        ...form,
-                        options: { ...form.options, publicResponses: value },
-                      }),
-                    })
-                    toast
-                      .promise(updateForm, {
-                        loading: `Updating form`,
-                        success: `Form has been updated`,
-                        error: `Error while updating form`,
-                      })
-                      .then(() => {
-                        mutate(`/api/forms/${id}`)
-                      })
-                  }}
-                />
-                <span className="text-sm text-gray-500 px-4">
-                  Make the responses page visible to anyone
-                </span>
-              </div>
-              <div className="max-w-md mb-2">
-                <LabelSwitch
                   label="Lock responses"
                   checked={form.options.lockedResponses}
                   onChange={(value) => {

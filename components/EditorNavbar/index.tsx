@@ -137,19 +137,6 @@ const EditorNavbar = ({
             </div>
             <div className="py-2">
               <LabelSwitch
-                label="Public responses"
-                checked={!user ? true : options.publicResponses}
-                onChange={(value) => {
-                  if (!user) {
-                    return toast.error(`Log in first to hide form responses`)
-                  }
-                  setOptions((state) => ({
-                    ...state,
-                    publicResponses: value,
-                  }))
-                }}
-              />
-              <LabelSwitch
                 label="Lock responses"
                 checked={!user ? false : options.lockedResponses}
                 onChange={(value) => {
