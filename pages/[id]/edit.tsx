@@ -20,6 +20,7 @@ import {
 } from 'lib/atoms/form'
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { mutate } from 'swr'
+import { OverlayPage } from 'components/OverlayPage'
 
 const EditPage: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -44,18 +45,29 @@ const EditPage: NextPage = () => {
   }, [form, setTitle, setHeader, setStyle, setOptions, setBlocks])
 
   if (isLoading || isLoadingForm) {
-    return <p>Loading...</p>
+    return (
+      <OverlayPage
+        title="Loading"
+        description="We're fethcing this form data"
+      />
+    )
   }
   if (error || formError) {
     return (
-      <pre>
-        <code>{JSON.stringify(error || formError)}</code>
-      </pre>
+      <OverlayPage
+        title="Error"
+        description="Something went wrong while fetching form data"
+      />
     )
   }
 
   if (form.workspace !== user?.sub) {
-    return <p>You are not allowed to view this page</p>
+    return (
+      <OverlayPage
+        title="Unautorized"
+        description="You don't have permission to edit this form"
+      />
+    )
   }
 
   return (

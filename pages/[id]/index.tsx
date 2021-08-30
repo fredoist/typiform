@@ -16,6 +16,7 @@ import { useResponses } from 'lib/hooks/useResponses'
 import { LabelSwitch } from 'components/LabelSwitch'
 import { mutate } from 'swr'
 import toast, { Toaster } from 'react-hot-toast'
+import { OverlayPage } from 'components/OverlayPage'
 
 const FormDashboard: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -28,18 +29,29 @@ const FormDashboard: NextPage = () => {
   const { user, error, isLoading } = useUser()
 
   if (isLoadingResponses || isLoadingForm || isLoading) {
-    return <p>Loading</p>
+    return (
+      <OverlayPage
+        title="Loading"
+        description="We're fetching this form data"
+      />
+    )
   }
   if (formError || responsesError || error) {
     return (
-      <pre>
-        <code>{JSON.stringify(error || formError || responsesError)}</code>
-      </pre>
+      <OverlayPage
+        title="Error"
+        description="Something went wrong while fetching form data"
+      />
     )
   }
 
   if (form.workspace !== user?.sub) {
-    return <p>You are not allowed to view this page</p>
+    return (
+      <OverlayPage
+        title="Unautorized"
+        description="You don't have permission to edit this form"
+      />
+    )
   }
 
   return (

@@ -34,7 +34,8 @@ const Sidebar = ({ show }: { show: boolean }) => {
     return null
   }
   if (formsError || error) {
-    return <p>Error</p>
+    console.log(formsError || error)
+    return null
   }
 
   return (

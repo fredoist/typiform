@@ -11,6 +11,7 @@ import { formBlock } from 'lib/types/form'
 import { ArrowRightIcon } from '@heroicons/react/outline'
 import toast, { Toaster } from 'react-hot-toast'
 import { sanitize } from 'lib/utils/sanitize'
+import { OverlayPage } from 'components/OverlayPage'
 
 const ViewFormPage: NextPage = () => {
   const router = useRouter()
@@ -19,13 +20,19 @@ const ViewFormPage: NextPage = () => {
   const { register, handleSubmit } = useForm()
 
   if (isLoadingForm) {
-    return <p>Loading</p>
+    return (
+      <OverlayPage
+        title="Loading"
+        description="We're fetching this form data"
+      />
+    )
   }
   if (formError) {
     return (
-      <pre>
-        <code>{JSON.stringify(formError)}</code>
-      </pre>
+      <OverlayPage
+        title="Error"
+        description="Something went wrong while fetching form data"
+      />
     )
   }
 
