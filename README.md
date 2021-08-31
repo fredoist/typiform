@@ -60,7 +60,7 @@
 
 ## About The Project
 
-[![Typiform Screen Shot](https://i.postimg.cc/XqJ8Bhnj/screenshot.png)](https://i.postimg.cc/XqJ8Bhnj/screenshot.png)
+![Typiform Screen Shot](public/landing/screenshot.png)
 
 ### Built With
 
@@ -123,7 +123,20 @@ This is an example of how to list things you need to use the software and how to
 
 ## Screenshots
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Landing Page
+![Landing Screenshot](screenshots/landing.png)
+
+Form Editor
+![Editor Screenshot](screenshots/editor.png)
+
+Unsplash Integration
+![Unsplash Screenshot](screenshots/unsplash-integration.png)
+
+Dashboard Page
+![Dashboard Screenshot](screenshots/dashboard.png)
+
+Viewform Page
+![Viewform Screenshot](screenshots/viewform.png)
 
 _For more, please refer to the [Hashnode Article](https://fredoist.hashnode.com)_
 
