@@ -6,9 +6,9 @@ import { atomWithStorage } from 'jotai/utils'
 import toast from 'react-hot-toast'
 import { useUser } from '@auth0/nextjs-auth0'
 
-import { EditorNavbar } from 'components/EditorNavbar'
+import { EditorNavbar } from 'components/Editor/EditorNavbar'
 import { EditorHeader } from 'components/Editor/EditorHeader'
-import { EditablePage } from 'components/EditablePage'
+import { EditablePage } from 'components/Editor/EditablePage'
 import {
   blocksAtom,
   headerAtom,

@@ -5,7 +5,7 @@ import cx from 'classnames'
 import ReactDragListView from 'react-drag-listview'
 
 import definedBlocks from 'lib/blocks.json'
-import { EditableBlock } from 'components/EditableBlock'
+import { EditableBlock } from 'components/Editor/EditableBlock'
 import { titleAtom } from 'lib/atoms/form'
 import { formBlock, formStyle } from 'lib/types/form'
 import { placeCaretAtEnd } from 'lib/utils/placeCaretAtEnd'
