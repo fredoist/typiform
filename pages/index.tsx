@@ -81,8 +81,8 @@ const IndexPage: NextPage = () => {
         <div className="w-3/4">
           <Image
             src="/landing/screenshot.png"
-            width={1920}
-            height={940}
+            width={840}
+            height={411}
             className="shadow-2xl rounded overflow-hidden"
             alt="App screenshot"
           />
