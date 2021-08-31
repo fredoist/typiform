@@ -74,7 +74,7 @@ const EditorHeader = ({
             )}
           </div>
           <Popover
-            className={cx('relative mx-auto z-10', {
+            className={cx('relative mx-auto z-50', {
               'max-w-5xl': style.fullWidth,
               'max-w-xl': !style.fullWidth,
             })}
@@ -91,7 +91,7 @@ const EditorHeader = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Popover.Panel className="absolute right-0 w-full max-w-sm bg-white rounded shadow-lg ring-1 ring-black/5 p-2 z-10">
+              <Popover.Panel className="absolute right-0 w-full max-w-sm bg-white rounded shadow-lg ring-1 ring-black/5 p-2 z-50">
                 <Tab.Group>
                   <div className="flex items-center justify-between text-sm">
                     <Tab.List className="flex gap-1">
@@ -312,7 +312,7 @@ const EditorHeader = ({
           className={cx({ 'h-8 md:h-12 lg:h-16': header.cover && header.icon })}
         >
           {header.icon && (
-            <Popover className="relative">
+            <Popover className="relative z-50">
               <Popover.Button
                 className={cx(
                   'w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded hover:ring-8 hover:ring-black/10 overflow-hidden',
@@ -343,7 +343,7 @@ const EditorHeader = ({
               >
                 <Popover.Panel
                   className={cx(
-                    'absolute left-0 translate-y-2 w-full max-w-sm bg-white rounded shadow-lg ring-1 ring-black/5 p-2 z-10',
+                    'absolute left-0 translate-y-2 w-full max-w-sm bg-white rounded shadow-lg ring-1 ring-black/5 p-2 z-50',
                     { 'top-8 md:top-16 lg:top-20': header.cover }
                   )}
                 >
