@@ -1,7 +1,6 @@
 import { NextPage } from 'next'
 import * as React from 'react'
 import Image from 'next/image'
-import Head from 'next/head'
 import Link from 'next/link'
 import cx from 'classnames'
 import { Sidebar } from 'components/Sidebar'
@@ -13,10 +12,11 @@ import { sidebarAtom } from 'pages/create'
 import { Tab } from '@headlessui/react'
 import { MenuIcon, PencilIcon } from '@heroicons/react/outline'
 import { useResponses } from 'lib/hooks/useResponses'
-import { LabelSwitch } from 'components/LabelSwitch'
+import { LabelSwitch } from 'components/Editor/LabelSwitch'
 import { mutate } from 'swr'
 import toast, { Toaster } from 'react-hot-toast'
 import { OverlayPage } from 'components/OverlayPage'
+import { Layout } from 'components/Layout'
 
 const FormDashboard: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -56,15 +56,7 @@ const FormDashboard: NextPage = () => {
   }
 
   return (
-    <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden flex">
-      <Toaster />
-      <Head>
-        <title>{form.title ? form.title : 'Untitled form'}</title>
-        <link
-          rel="icon"
-          href={form.header.icon ? form.header.icon : '/img/defaultIcon.svg'}
-        />
-      </Head>
+    <Layout title={form.title} icon={form.header.icon}>
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -254,7 +246,7 @@ const FormDashboard: NextPage = () => {
           </Tab.Panels>
         </Tab.Group>
       </section>
-    </main>
+    </Layout>
   )
 }
 

@@ -1,6 +1,5 @@
-import type { NextPage } from 'next'
+import { NextPage } from 'next'
 import Link from 'next/link'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { useUser } from '@auth0/nextjs-auth0'
@@ -12,6 +11,8 @@ import {
   LoginIcon,
   PencilIcon,
 } from '@heroicons/react/outline'
+import { Logo } from 'components/Logo'
+import { Layout } from 'components/Layout'
 
 const IndexPage: NextPage = () => {
   const router = useRouter()
@@ -22,19 +23,13 @@ const IndexPage: NextPage = () => {
   }
 
   return (
-    <main role="main" className="lg:flex flex-row-reverse h-screen">
-      <Head>
-        <title>Easy online form builder that works like a doc - Typiform</title>
-        <link rel="icon" href="/icon.svg" />
-      </Head>
+    <Layout
+      title="Simple online form builder that works like a doc - Typiform"
+      icon="/icon.svg"
+    >
       <div className="lg:w-1/4">
         <div className="flex px-4 py-6 items-center justify-between">
-          <Link href="/">
-            <a>
-              <span className="sr-only">Typiform</span>
-              <Image src="/logo.svg" width={95} height={24} alt="Typiform" />
-            </a>
-          </Link>
+          <Logo />
           <a className="btn" href="/api/auth/login?returnTo=/create">
             <span>Log In</span>
             <LoginIcon className="icon" />
@@ -88,7 +83,7 @@ const IndexPage: NextPage = () => {
           />
         </div>
       </div>
-    </main>
+    </Layout>
   )
 }
 

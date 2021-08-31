@@ -2,13 +2,12 @@ import * as React from 'react'
 import { NextPage } from 'next'
 import { useAtom } from 'jotai'
 import { useRouter } from 'next/router'
-import Head from 'next/head'
 import toast from 'react-hot-toast'
 import { useUser } from '@auth0/nextjs-auth0'
 
 import { Sidebar } from 'components/Sidebar'
 import { EditorNavbar } from 'components/EditorNavbar'
-import { EditorHeader } from 'components/EditorHeader'
+import { EditorHeader } from 'components/Editor/EditorHeader'
 import { EditablePage } from 'components/EditablePage'
 import { sidebarAtom } from 'pages/create'
 import {
@@ -21,6 +20,7 @@ import {
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { mutate } from 'swr'
 import { OverlayPage } from 'components/OverlayPage'
+import { Layout } from 'components/Layout'
 
 const EditPage: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -71,14 +71,7 @@ const EditPage: NextPage = () => {
   }
 
   return (
-    <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden flex">
-      <Head>
-        <title>{title ? title : 'Untitled form'}</title>
-        <link
-          rel="icon"
-          href={header.icon ? header.icon : '/img/defaultIcon.svg'}
-        />
-      </Head>
+    <Layout title={title} icon={header.icon}>
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
@@ -118,7 +111,7 @@ const EditPage: NextPage = () => {
         <EditorHeader header={header} style={style} />
         <EditablePage title={title} blocks={blocks} style={style} />
       </section>
-    </main>
+    </Layout>
   )
 }
 

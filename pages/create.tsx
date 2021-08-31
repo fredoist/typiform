@@ -1,6 +1,5 @@
 import * as React from 'react'
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
@@ -8,7 +7,7 @@ import toast from 'react-hot-toast'
 import { useUser } from '@auth0/nextjs-auth0'
 
 import { EditorNavbar } from 'components/EditorNavbar'
-import { EditorHeader } from 'components/EditorHeader'
+import { EditorHeader } from 'components/Editor/EditorHeader'
 import { EditablePage } from 'components/EditablePage'
 import {
   blocksAtom,
@@ -19,6 +18,7 @@ import {
 } from 'lib/atoms/form'
 import { Sidebar } from 'components/Sidebar'
 import { mutate } from 'swr'
+import { Layout } from 'components/Layout'
 
 export const sidebarAtom = atomWithStorage('showSidebar', false)
 
@@ -41,14 +41,7 @@ const CreatePage: NextPage = () => {
   }, [setTitle, setHeader, setStyle, setOptions, setBlocks])
 
   return (
-    <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden flex">
-      <Head>
-        <title>{title ? title : 'Untitled form'}</title>
-        <link
-          rel="icon"
-          href={header.icon ? header.icon : '/img/defaultIcon.svg'}
-        />
-      </Head>
+    <Layout title={title} icon={header.icon}>
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
@@ -88,7 +81,7 @@ const CreatePage: NextPage = () => {
         <EditorHeader header={header} style={style} />
         <EditablePage title={title} blocks={blocks} style={style} />
       </section>
-    </main>
+    </Layout>
   )
 }
 
