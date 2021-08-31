@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import cx from 'classnames'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { Popover, RadioGroup, Transition } from '@headlessui/react'
 import { useUser } from '@auth0/nextjs-auth0'
 import {
@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/outline'
 
 import { optionsAtom, styleAtom } from 'lib/atoms/form'
-import { LabelSwitch } from 'components/LabelSwitch'
+import { LabelSwitch } from 'components/Editor/LabelSwitch'
 import { formOptions, formStyle } from 'lib/types/form'
 import { mutate } from 'swr'
 import { useFetchAll } from 'lib/hooks/useFetchAll'
@@ -65,7 +65,6 @@ const EditorNavbar = ({
         />
       )}
       <span className="flex-1 truncate">{title}</span>
-      <Toaster position="top-center" reverseOrder={false} />
       <Popover className="lg:relative">
         <Popover.Button className="btn">
           <span className="sr-only">Toggle form options</span>

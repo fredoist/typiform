@@ -19,6 +19,7 @@ import {
 } from '@heroicons/react/outline'
 
 import { useFetchAll } from 'lib/hooks/useFetchAll'
+import { Logo } from 'components/Logo'
 
 const Sidebar = ({ show }: { show: boolean }) => {
   const { user, isLoading, error } = useUser()
@@ -51,12 +52,7 @@ const Sidebar = ({ show }: { show: boolean }) => {
     >
       <aside className="w-4/5 md:w-2/5 lg:w-1/5 bg-gray-50 flex flex-col">
         <div className="flex items-center justify-between p-4">
-          <Link href="/">
-            <a>
-              <span className="sr-only">Typiform</span>
-              <Image src="/logo.svg" width={95} height={24} alt="Typiform" />
-            </a>
-          </Link>
+          <Logo />
           {user && (
             <a href="/api/auth/logout" className="btn text-sm">
               <span>Log Out</span>
