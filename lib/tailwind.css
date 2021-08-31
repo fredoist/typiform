@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .icon {
+    @apply w-4 h-4;
+  }
+  .btn {
+    @apply p-2 flex items-center gap-1 hover:bg-gray-100 rounded leading-none transition-colors;
+  }
+  .btn-primary {
+    @apply bg-red-500 hover:bg-red-600 text-white;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2 bg-gray-100;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300;
+  }
+  .draggable-block-line {
+    @apply !border-b-4 !border-blue-300 !border-solid;
+  }
+  .table th,
+  .table td {
+    @apply whitespace-nowrap;
+  }
+  .table tbody tr:nth-child(odd) {
+    @apply bg-gray-50;
+  }
+}

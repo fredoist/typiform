@@ -1,0 +1,87 @@
+[
+  {
+    "tag": "p",
+    "label": "Text block",
+    "placeholder": "Type '/' to add a block element",
+    "icon": "text.svg",
+    "props": {
+      "className": "leading-normal py-1"
+    }
+  },
+  {
+    "tag": "h2",
+    "label": "Section heading",
+    "placeholder": "Untitled section",
+    "icon": "type.svg",
+    "props": {
+      "className": "text-lg lg:text-xl font-bold py-1"
+    }
+  },
+  {
+    "tag": "hr",
+    "label": "Divider",
+    "icon": "divider.svg",
+    "props": {
+      "className": "relative my-2 before:w-full before:h-px before:bg-gray-300 before:absolute before:top-1/2 before:translate-y-1/2"
+    }
+  },
+  {
+    "tag": "input",
+    "label": "Short answer",
+    "placeholder": "Name this field",
+    "icon": "textline.svg",
+    "props": {
+      "type": "text",
+      "className": "w-full p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+    }
+  },
+  {
+    "tag": "textarea",
+    "label": "Long answer",
+    "placeholder": "Name this field",
+    "icon": "message.svg",
+    "props": {
+      "className": "w-full p-2 h-32 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+    }
+  },
+  {
+    "tag": "input",
+    "label": "Email address",
+    "placeholder": "Name this field",
+    "icon": "email.svg",
+    "props": {
+      "type": "email",
+      "className": "w-full p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+    }
+  },
+  {
+    "tag": "input",
+    "label": "Phone number",
+    "placeholder": "Name this field",
+    "icon": "phone.svg",
+    "props": {
+      "type": "tel",
+      "className": "w-full p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+    }
+  },
+  {
+    "tag": "input",
+    "label": "Link address",
+    "placeholder": "Name this field",
+    "icon": "link.svg",
+    "props": {
+      "type": "url",
+      "className": "w-full p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+    }
+  },
+  {
+    "tag": "input",
+    "label": "Calendar",
+    "placeholder": "Name this field",
+    "icon": "calendar.svg",
+    "props": {
+      "type": "date",
+      "className": "w-full p-2 border border-gray-200 focus:ring-4 focus:ring-red/5 focus:border-blue-500 rounded focus:outline-none"
+    }
+  }
+]
