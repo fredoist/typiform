@@ -14,7 +14,7 @@ import { MenuIcon, PencilIcon } from '@heroicons/react/outline'
 import { useResponses } from 'lib/hooks/useResponses'
 import { LabelSwitch } from 'components/Editor/LabelSwitch'
 import { mutate } from 'swr'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { OverlayPage } from 'components/OverlayPage'
 import { Layout } from 'components/Layout'
 
@@ -46,12 +46,17 @@ const FormDashboard: NextPage = () => {
     )
   }
 
-  if (form.workspace !== user?.sub) {
+  if (
+    (!form.options.publicResponses && form.workspace !== user?.sub) ||
+    (!form.options.publicResponses && !user)
+  ) {
     return (
-      <OverlayPage
-        title="Unautorized"
-        description="You don't have permission to edit this form"
-      />
+      <Layout title="Not Allowed">
+        <OverlayPage
+          title="Not Allowed"
+          description="You can't access this page"
+        />
+      </Layout>
     )
   }
 
@@ -99,30 +104,34 @@ const FormDashboard: NextPage = () => {
                 </button>
               )}
             </Tab>
-            <Tab as={React.Fragment}>
-              {({ selected }) => (
-                <button
-                  className={cx('py-2 focus:outline-none border-b-2', {
-                    'border-black': selected,
-                    'border-transparent hover:border-gray-300': !selected,
-                  })}
-                >
-                  Share
-                </button>
-              )}
-            </Tab>
-            <Tab as={React.Fragment}>
-              {({ selected }) => (
-                <button
-                  className={cx('py-2 focus:outline-none border-b-2', {
-                    'border-black': selected,
-                    'border-transparent hover:border-gray-300': !selected,
-                  })}
-                >
-                  Settings
-                </button>
-              )}
-            </Tab>
+            {form.workspace === user?.sub && (
+              <React.Fragment>
+                <Tab as={React.Fragment}>
+                  {({ selected }) => (
+                    <button
+                      className={cx('py-2 focus:outline-none border-b-2', {
+                        'border-black': selected,
+                        'border-transparent hover:border-gray-300': !selected,
+                      })}
+                    >
+                      Share
+                    </button>
+                  )}
+                </Tab>
+                <Tab as={React.Fragment}>
+                  {({ selected }) => (
+                    <button
+                      className={cx('py-2 focus:outline-none border-b-2', {
+                        'border-black': selected,
+                        'border-transparent hover:border-gray-300': !selected,
+                      })}
+                    >
+                      Settings
+                    </button>
+                  )}
+                </Tab>
+              </React.Fragment>
+            )}
           </Tab.List>
           <Tab.Panels className="py-4">
             <Tab.Panel>
@@ -187,6 +196,33 @@ const FormDashboard: NextPage = () => {
               </div>
             </Tab.Panel>
             <Tab.Panel>
+              <div className="max-w-md mb-2">
+                <LabelSwitch
+                  label="Public responses page"
+                  checked={form.options.publicResponses}
+                  onChange={(value) => {
+                    const updateForm = fetch(`/api/forms/${id}/update`, {
+                      method: 'PATCH',
+                      body: JSON.stringify({
+                        ...form,
+                        options: { ...form.options, publicResponses: value },
+                      }),
+                    })
+                    toast
+                      .promise(updateForm, {
+                        loading: `Updating form`,
+                        success: `Form has been updated`,
+                        error: `Error while updating form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/${id}`)
+                      })
+                  }}
+                />
+                <span className="text-sm text-gray-500 px-4">
+                  Allow everyone to see responses of this form
+                </span>
+              </div>
               <div className="max-w-md mb-2">
                 <LabelSwitch
                   label="Lock responses"

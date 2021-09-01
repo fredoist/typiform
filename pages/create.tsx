@@ -72,7 +72,7 @@ const CreatePage: NextPage = () => {
               })
               .then((res) => res.json())
               .then(({ id }) => {
-                router.push(`/${id}/edit`)
+                router.push(`/${id}`)
                 mutate(`/api/forms/${id}`)
                 if (user) mutate(`/api/forms/${user?.sub}`)
               })
