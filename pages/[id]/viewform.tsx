@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { NextPage } from 'next'
-import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import cx from 'classnames'
@@ -12,6 +11,7 @@ import { ArrowRightIcon } from '@heroicons/react/outline'
 import toast, { Toaster } from 'react-hot-toast'
 import { sanitize } from 'lib/utils/sanitize'
 import { OverlayPage } from 'components/OverlayPage'
+import { Layout } from 'components/Layout'
 
 const ViewFormPage: NextPage = () => {
   const router = useRouter()
@@ -37,15 +37,7 @@ const ViewFormPage: NextPage = () => {
   }
 
   return (
-    <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden">
-      <Toaster />
-      <Head>
-        <title>{form.title ? form.title : 'Untitled form'}</title>
-        <link
-          rel="icon"
-          href={form.header.icon ? form.header.icon : '/img/defaultIcon.svg'}
-        />
-      </Head>
+    <Layout title={form.title} icon={form.header.icon}>
       <section className="w-screen h-screen overflow-y-auto">
         <header className="relative">
           {form.header.cover && (
@@ -170,7 +162,7 @@ const ViewFormPage: NextPage = () => {
       >
         <span>Powered by Typiform</span>
       </a>
-    </main>
+    </Layout>
   )
 }
 

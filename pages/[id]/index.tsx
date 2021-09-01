@@ -1,7 +1,6 @@
 import { NextPage } from 'next'
 import * as React from 'react'
 import Image from 'next/image'
-import Head from 'next/head'
 import Link from 'next/link'
 import cx from 'classnames'
 import { Sidebar } from 'components/Sidebar'
@@ -13,10 +12,11 @@ import { sidebarAtom } from 'pages/create'
 import { Tab } from '@headlessui/react'
 import { MenuIcon, PencilIcon } from '@heroicons/react/outline'
 import { useResponses } from 'lib/hooks/useResponses'
-import { LabelSwitch } from 'components/LabelSwitch'
+import { LabelSwitch } from 'components/Editor/LabelSwitch'
 import { mutate } from 'swr'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { OverlayPage } from 'components/OverlayPage'
+import { Layout } from 'components/Layout'
 
 const FormDashboard: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -46,25 +46,22 @@ const FormDashboard: NextPage = () => {
     )
   }
 
-  if (form.workspace !== user?.sub) {
+  if (
+    (!form.options.publicResponses && form.workspace !== user?.sub) ||
+    (!form.options.publicResponses && !user)
+  ) {
     return (
-      <OverlayPage
-        title="Unautorized"
-        description="You don't have permission to edit this form"
-      />
+      <Layout title="Not Allowed">
+        <OverlayPage
+          title="Not Allowed"
+          description="You can't access this page"
+        />
+      </Layout>
     )
   }
 
   return (
-    <main className="leading-tight text-gray-800 w-screen h-screen overflow-hidden flex">
-      <Toaster />
-      <Head>
-        <title>{form.title ? form.title : 'Untitled form'}</title>
-        <link
-          rel="icon"
-          href={form.header.icon ? form.header.icon : '/img/defaultIcon.svg'}
-        />
-      </Head>
+    <Layout title={form.title} icon={form.header.icon} className="flex">
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -107,30 +104,34 @@ const FormDashboard: NextPage = () => {
                 </button>
               )}
             </Tab>
-            <Tab as={React.Fragment}>
-              {({ selected }) => (
-                <button
-                  className={cx('py-2 focus:outline-none border-b-2', {
-                    'border-black': selected,
-                    'border-transparent hover:border-gray-300': !selected,
-                  })}
-                >
-                  Share
-                </button>
-              )}
-            </Tab>
-            <Tab as={React.Fragment}>
-              {({ selected }) => (
-                <button
-                  className={cx('py-2 focus:outline-none border-b-2', {
-                    'border-black': selected,
-                    'border-transparent hover:border-gray-300': !selected,
-                  })}
-                >
-                  Settings
-                </button>
-              )}
-            </Tab>
+            {form.workspace === user?.sub && (
+              <React.Fragment>
+                <Tab as={React.Fragment}>
+                  {({ selected }) => (
+                    <button
+                      className={cx('py-2 focus:outline-none border-b-2', {
+                        'border-black': selected,
+                        'border-transparent hover:border-gray-300': !selected,
+                      })}
+                    >
+                      Share
+                    </button>
+                  )}
+                </Tab>
+                <Tab as={React.Fragment}>
+                  {({ selected }) => (
+                    <button
+                      className={cx('py-2 focus:outline-none border-b-2', {
+                        'border-black': selected,
+                        'border-transparent hover:border-gray-300': !selected,
+                      })}
+                    >
+                      Settings
+                    </button>
+                  )}
+                </Tab>
+              </React.Fragment>
+            )}
           </Tab.List>
           <Tab.Panels className="py-4">
             <Tab.Panel>
@@ -197,6 +198,33 @@ const FormDashboard: NextPage = () => {
             <Tab.Panel>
               <div className="max-w-md mb-2">
                 <LabelSwitch
+                  label="Public responses page"
+                  checked={form.options.publicResponses}
+                  onChange={(value) => {
+                    const updateForm = fetch(`/api/forms/${id}/update`, {
+                      method: 'PATCH',
+                      body: JSON.stringify({
+                        ...form,
+                        options: { ...form.options, publicResponses: value },
+                      }),
+                    })
+                    toast
+                      .promise(updateForm, {
+                        loading: `Updating form`,
+                        success: `Form has been updated`,
+                        error: `Error while updating form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/${id}`)
+                      })
+                  }}
+                />
+                <span className="text-sm text-gray-500 px-4">
+                  Allow everyone to see responses of this form
+                </span>
+              </div>
+              <div className="max-w-md mb-2">
+                <LabelSwitch
                   label="Lock responses"
                   checked={form.options.lockedResponses}
                   onChange={(value) => {
@@ -254,7 +282,7 @@ const FormDashboard: NextPage = () => {
           </Tab.Panels>
         </Tab.Group>
       </section>
-    </main>
+    </Layout>
   )
 }
 
