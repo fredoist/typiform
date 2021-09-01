@@ -145,7 +145,7 @@ const EditorNavbar = ({
                   }
                   setOptions((state) => ({
                     ...state,
-                    lockedResponses: value,
+                    publicResponses: value,
                   }))
                 }}
               />
