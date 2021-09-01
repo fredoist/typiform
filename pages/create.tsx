@@ -18,7 +18,8 @@ import {
 } from 'lib/atoms/form'
 import { Sidebar } from 'components/editor/Sidebar'
 import { mutate } from 'swr'
-import { Layout } from 'components/Layout'
+import { Layout } from 'components/editor/Layout'
+import { SEO } from 'components/common/SEO'
 
 export const sidebarAtom = atomWithStorage('showSidebar', false)
 
@@ -41,7 +42,8 @@ const CreatePage: NextPage = () => {
   }, [setTitle, setHeader, setStyle, setOptions, setBlocks])
 
   return (
-    <Layout title={title} icon={header.icon} className="flex">
+    <Layout>
+      <SEO title={title ? title : 'Create a form'} />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar

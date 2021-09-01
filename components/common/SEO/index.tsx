@@ -3,7 +3,7 @@ import Head from 'next/head'
 
 interface SEOProps {
   title: string | undefined
-  description: string | undefined
+  description?: string | undefined
   icon?: string
   image?: string
   url?: string
