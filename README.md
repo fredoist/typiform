@@ -11,7 +11,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/fredoist/typiform">
-    <img src="public/logo.svg" alt="Logo" width="288" height="48">
+    <img src="public/icon.svg" alt="Logo" width="288" height="48">
   </a>
 
   <h3 align="center">Typiform</h3>
@@ -19,7 +19,7 @@
   <p align="center">
     Easy online form builder that works like a doc. Just add form elements as you type and start collecting data.
     <br />
-    <a href="https://fredoist.hashnode.com"><strong>Read article on Hashnode »</strong></a>
+    <a href="https://fredoist.hashnode.dev/introducing-typiform-simple-online-form-builder-that-works-like-a-doc"><strong>Read article on Hashnode »</strong></a>
     <br />
     <br />
     <a href="https://typiform.vercel.app">View Demo</a>
@@ -60,7 +60,7 @@
 
 ## About The Project
 
-![Typiform Screen Shot](public/landing/screenshot.png)
+[![Typiform Screen Shot](screenshots/cover.png)](https://fredoist.hashnode.dev/introducing-typiform-simple-online-form-builder-that-works-like-a-doc)
 
 ### Built With
 
@@ -138,7 +138,7 @@ Dashboard Page
 Viewform Page
 ![Viewform Screenshot](screenshots/viewform.png)
 
-_For more, please refer to the [Hashnode Article](https://fredoist.hashnode.com)_
+_For more, please refer to the [Hashnode Article](https://fredoist.hashnode.dev/introducing-typiform-simple-online-form-builder-that-works-like-a-doc)_
 
 <!-- ROADMAP -->
 
