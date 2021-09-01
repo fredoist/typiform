@@ -16,7 +16,7 @@ import {
   styleAtom,
   titleAtom,
 } from 'lib/atoms/form'
-import { Sidebar } from 'components/Sidebar'
+import { Sidebar } from 'components/editor/Sidebar'
 import { mutate } from 'swr'
 import { Layout } from 'components/Layout'
 

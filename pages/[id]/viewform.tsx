@@ -10,7 +10,7 @@ import { formBlock } from 'lib/types/form'
 import { ArrowRightIcon } from '@heroicons/react/outline'
 import toast, { Toaster } from 'react-hot-toast'
 import { sanitize } from 'lib/utils/sanitize'
-import { OverlayPage } from 'components/OverlayPage'
+import { OverlayPage } from 'components/common/OverlayPage'
 import { Layout } from 'components/Layout'
 
 const ViewFormPage: NextPage = () => {

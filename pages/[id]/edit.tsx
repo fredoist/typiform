@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import { useUser } from '@auth0/nextjs-auth0'
 
-import { Sidebar } from 'components/Sidebar'
+import { Sidebar } from 'components/editor/Sidebar'
 import { EditorNavbar } from 'components/editor/EditorNavbar'
 import { EditorHeader } from 'components/editor/EditorHeader'
 import { EditablePage } from 'components/editor/EditablePage'
@@ -19,7 +19,7 @@ import {
 } from 'lib/atoms/form'
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { mutate } from 'swr'
-import { OverlayPage } from 'components/OverlayPage'
+import { OverlayPage } from 'components/common/OverlayPage'
 import { Layout } from 'components/Layout'
 
 const EditPage: NextPage = () => {
