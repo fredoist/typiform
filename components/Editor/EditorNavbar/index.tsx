@@ -43,6 +43,7 @@ const EditorNavbar = ({
   onPublish: React.MouseEventHandler<HTMLButtonElement>
 }) => {
   const router = useRouter()
+  const { id } = router.query
   const [, setStyle] = useAtom(styleAtom)
   const [, setOptions] = useAtom(optionsAtom)
   const { user } = useUser()
@@ -162,54 +163,53 @@ const EditorNavbar = ({
                 }}
               />
             </div>
-            <div className="py-2">
-              <a
-                href={`/${router.query.id}/viewform`}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
-              >
-                <EyeIcon className="icon text-gray-400" />
-                <span>View form</span>
-              </a>
-              <button
-                className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
-                onClick={() => {
-                  const link = `${window.location.host}/${router.query.id}/viewform`
-                  navigator.clipboard.writeText(link)
-                  toast('Link copied to clipboard', {
-                    icon: '📎',
-                  })
-                }}
-              >
-                <LinkIcon className="icon text-gray-400" />
-                <span>Copy link</span>
-              </button>
-              <button
-                className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
-                onClick={() => {
-                  const deleteForm = fetch(
-                    `/api/forms/${router.query.id}/delete`,
-                    {
+            {id && (
+              <div className="py-2">
+                <a
+                  href={`/${id}/viewform`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                >
+                  <EyeIcon className="icon text-gray-400" />
+                  <span>View form</span>
+                </a>
+                <button
+                  className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                  onClick={() => {
+                    const link = `${window.location.host}/${id}/viewform`
+                    navigator.clipboard.writeText(link)
+                    toast('Link copied to clipboard', {
+                      icon: '📎',
+                    })
+                  }}
+                >
+                  <LinkIcon className="icon text-gray-400" />
+                  <span>Copy link</span>
+                </button>
+                <button
+                  className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                  onClick={() => {
+                    const deleteForm = fetch(`/api/forms/${id}/delete`, {
                       method: 'DELETE',
-                    }
-                  )
-                  toast
-                    .promise(deleteForm, {
-                      loading: `Deleting form`,
-                      success: `Form has been deleted`,
-                      error: `Error while deleting form`,
                     })
-                    .then(() => {
-                      mutate(`/api/forms/user/${user?.sub}`)
-                      router.push(`/${forms[0].id}/edit`)
-                    })
-                }}
-              >
-                <TrashIcon className="icon text-gray-400" />
-                <span>Delete</span>
-              </button>
-            </div>
+                    toast
+                      .promise(deleteForm, {
+                        loading: `Deleting form`,
+                        success: `Form has been deleted`,
+                        error: `Error while deleting form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/user/${user?.sub}`)
+                        router.push(`/${forms[0].id}/edit`)
+                      })
+                  }}
+                >
+                  <TrashIcon className="icon text-gray-400" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            )}
           </Popover.Panel>
         </Transition>
       </Popover>
