@@ -50,7 +50,7 @@ const IndexPage: NextPage = () => {
               <ArrowRightIcon className="icon" />
             </button>
           </Link>
-          <span className="text-sm">No account required</span>
+          <span className="text-sm">No signup required</span>
         </div>
         <div className="p-4">
           <ul>
