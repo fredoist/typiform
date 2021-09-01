@@ -207,7 +207,11 @@ const Sidebar = ({ show }: { show: boolean }) => {
                                       mutate(
                                         `/api/forms/user/${user.sub}`
                                       ).then(() => {
-                                        router.push(`/${forms[0].id}`)
+                                        if (forms.length > 0) {
+                                          router.push(`/${forms[0].id}`)
+                                        } else {
+                                          router.push(`/create`)
+                                        }
                                       })
                                     })
                                 }}
