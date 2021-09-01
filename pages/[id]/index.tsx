@@ -56,7 +56,7 @@ const FormDashboard: NextPage = () => {
   }
 
   return (
-    <Layout title={form.title} icon={form.header.icon}>
+    <Layout title={form.title} icon={form.header.icon} className="flex">
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">

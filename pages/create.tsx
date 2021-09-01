@@ -41,7 +41,7 @@ const CreatePage: NextPage = () => {
   }, [setTitle, setHeader, setStyle, setOptions, setBlocks])
 
   return (
-    <Layout title={title} icon={header.icon}>
+    <Layout title={title} icon={header.icon} className="flex">
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
