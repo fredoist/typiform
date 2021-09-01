@@ -32,11 +32,11 @@ const Sidebar = ({ show }: { show: boolean }) => {
   }, [forms])
 
   if (isLoading || isLoadingForms) {
-    return null
+    return <aside />
   }
   if (formsError || error) {
     console.log(formsError || error)
-    return null
+    return <aside />
   }
 
   return (
@@ -106,6 +106,7 @@ const Sidebar = ({ show }: { show: boolean }) => {
             </div>
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               {userForms &&
+                userForms.length > 0 &&
                 userForms.map((form: any) => (
                   <div
                     key={form.id}
@@ -204,15 +205,11 @@ const Sidebar = ({ show }: { show: boolean }) => {
                                       error: `Error while deleting form`,
                                     })
                                     .then(() => {
-                                      mutate(
-                                        `/api/forms/user/${user.sub}`
-                                      ).then(() => {
-                                        if (forms.length > 0) {
-                                          router.push(`/${forms[0].id}`)
-                                        } else {
+                                      mutate(`/api/forms/${user.sub}`).then(
+                                        () => {
                                           router.push(`/create`)
                                         }
-                                      })
+                                      )
                                     })
                                 }}
                               >

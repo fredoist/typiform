@@ -34,19 +34,21 @@ const EditorNavbar = ({
   options,
   toggleSidebar,
   onPublish,
+  workspace,
 }: {
   title: string | null
   icon: string | undefined
   style: formStyle
   options: formOptions
+  workspace?: string
   toggleSidebar: React.Dispatch<React.SetStateAction<boolean>>
   onPublish: React.MouseEventHandler<HTMLButtonElement>
 }) => {
   const router = useRouter()
+  const { id } = router.query
   const [, setStyle] = useAtom(styleAtom)
   const [, setOptions] = useAtom(optionsAtom)
   const { user } = useUser()
-  const { forms } = useFetchAll(`${user?.sub}`)
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -142,10 +144,34 @@ const EditorNavbar = ({
                   if (!user) {
                     return toast.error(`Log in to change this setting`)
                   }
-                  setOptions((state) => ({
-                    ...state,
-                    lockedResponses: value,
-                  }))
+                  if (id) {
+                    const updateForm = fetch(`/api/forms/${id}/update`, {
+                      method: 'PATCH',
+                      body: JSON.stringify({
+                        id: id,
+                        options: { ...options, publicResponses: value },
+                      }),
+                    })
+                    toast
+                      .promise(updateForm, {
+                        loading: `Updating form`,
+                        success: `Form has been updated`,
+                        error: `Error while updating form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/${id}`).then(() => {
+                          setOptions((state) => ({
+                            ...state,
+                            publicResponses: value,
+                          }))
+                        })
+                      })
+                  } else {
+                    setOptions((state) => ({
+                      ...state,
+                      publicResponses: value,
+                    }))
+                  }
                 }}
               />
               <LabelSwitch
@@ -155,61 +181,88 @@ const EditorNavbar = ({
                   if (!user) {
                     return toast.error(`Log in first to lock form responses`)
                   }
-                  setOptions((state) => ({
-                    ...state,
-                    lockedResponses: value,
-                  }))
+                  if (id) {
+                    const updateForm = fetch(`/api/forms/${id}/update`, {
+                      method: 'PATCH',
+                      body: JSON.stringify({
+                        id: id,
+                        options: { ...options, lockedResponses: value },
+                      }),
+                    })
+                    toast
+                      .promise(updateForm, {
+                        loading: `Updating form`,
+                        success: `Form has been updated`,
+                        error: `Error while updating form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/${id}`).then(() => {
+                          setOptions((state) => ({
+                            ...state,
+                            lockedResponses: value,
+                          }))
+                        })
+                      })
+                  } else {
+                    setOptions((state) => ({
+                      ...state,
+                      lockedResponses: value,
+                    }))
+                  }
                 }}
               />
             </div>
-            <div className="py-2">
-              <a
-                href={`/${router.query.id}/viewform`}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
-              >
-                <EyeIcon className="icon text-gray-400" />
-                <span>View form</span>
-              </a>
-              <button
-                className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
-                onClick={() => {
-                  const link = `${window.location.host}/${router.query.id}/viewform`
-                  navigator.clipboard.writeText(link)
-                  toast('Link copied to clipboard', {
-                    icon: '📎',
-                  })
-                }}
-              >
-                <LinkIcon className="icon text-gray-400" />
-                <span>Copy link</span>
-              </button>
-              <button
-                className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
-                onClick={() => {
-                  const deleteForm = fetch(
-                    `/api/forms/${router.query.id}/delete`,
-                    {
+            {id && (
+              <div className="py-2">
+                <a
+                  href={`/${id}/viewform`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                >
+                  <EyeIcon className="icon text-gray-400" />
+                  <span>View form</span>
+                </a>
+                <button
+                  className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                  onClick={() => {
+                    const link = `${window.location.host}/${id}/viewform`
+                    navigator.clipboard.writeText(link)
+                    toast('Link copied to clipboard', {
+                      icon: '📎',
+                    })
+                  }}
+                >
+                  <LinkIcon className="icon text-gray-400" />
+                  <span>Copy link</span>
+                </button>
+                <button
+                  className="w-full flex items-center gap-2 py-2 px-4 hover:bg-gray-100 transition-colors"
+                  onClick={() => {
+                    const deleteForm = fetch(`/api/forms/${id}/delete`, {
                       method: 'DELETE',
-                    }
-                  )
-                  toast
-                    .promise(deleteForm, {
-                      loading: `Deleting form`,
-                      success: `Form has been deleted`,
-                      error: `Error while deleting form`,
+                      body: JSON.stringify({
+                        workspace: workspace,
+                      }),
                     })
-                    .then(() => {
-                      mutate(`/api/forms/user/${user?.sub}`)
-                      router.push(`/${forms[0].id}/edit`)
-                    })
-                }}
-              >
-                <TrashIcon className="icon text-gray-400" />
-                <span>Delete</span>
-              </button>
-            </div>
+                    toast
+                      .promise(deleteForm, {
+                        loading: `Deleting form`,
+                        success: `Form has been deleted`,
+                        error: `Error while deleting form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/user/${user?.sub}`).then(() => {
+                          router.push(`/create`)
+                        })
+                      })
+                  }}
+                >
+                  <TrashIcon className="icon text-gray-400" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            )}
           </Popover.Panel>
         </Transition>
       </Popover>
