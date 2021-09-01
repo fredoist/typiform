@@ -11,7 +11,7 @@ import {
   LoginIcon,
   PencilIcon,
 } from '@heroicons/react/outline'
-import { Logo } from 'components/Logo'
+import { Logo } from 'components/common/Logo'
 import { Layout } from 'components/Layout'
 
 const IndexPage: NextPage = () => {

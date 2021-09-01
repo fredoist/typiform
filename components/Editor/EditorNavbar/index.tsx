@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/outline'
 
 import { optionsAtom, styleAtom } from 'lib/atoms/form'
-import { LabelSwitch } from 'components/Editor/LabelSwitch'
+import { LabelSwitch } from 'components/editor/LabelSwitch'
 import { formOptions, formStyle } from 'lib/types/form'
 import { mutate } from 'swr'
 import { useFetchAll } from 'lib/hooks/useFetchAll'
