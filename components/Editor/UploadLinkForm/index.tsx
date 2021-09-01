@@ -20,7 +20,11 @@ const UploadLinkForm = ({
   return (
     <form
       onSubmit={handleSubmit(async (data: FormData) => {
-        onSubmit(data.link)
+        const link = `/api/proxy-image?url=${encodeURIComponent(
+          `${data.link}`
+        )}`
+        console.log(link)
+        onSubmit(link)
       })}
     >
       <label htmlFor={id} className="text-sm text-gray-500">

@@ -62,7 +62,6 @@ const EditorHeader = ({
               <Image
                 alt="Cover"
                 src={header.cover}
-                unoptimized={true}
                 layout="fill"
                 objectFit="cover"
                 objectPosition="center"
@@ -326,7 +325,6 @@ const EditorHeader = ({
                   <Image
                     src={header.icon}
                     alt="Icon"
-                    unoptimized={true}
                     width={128}
                     height={128}
                   />
