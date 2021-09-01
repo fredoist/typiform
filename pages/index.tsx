@@ -73,7 +73,10 @@ const IndexPage: NextPage = () => {
           </ul>
         </div>
       </div>
-      <div className="px-4 py-8 lg:flex-1 bg-red-50 flex items-center justify-center">
+      <div
+        className="px-4 py-8 lg:flex-1 flex items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: 'url(./landing/background.svg)' }}
+      >
         <div className="w-3/4 shadow-2xl ring-1 ring-black/5 rounded overflow-hidden bg-white">
           <Image
             src="/landing/screenshot.png"
