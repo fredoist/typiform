@@ -186,7 +186,7 @@ const EditorNavbar = ({
                       method: 'PATCH',
                       body: JSON.stringify({
                         id: id,
-                        options: { ...options, publicResponses: value },
+                        options: { ...options, lockedResponses: value },
                       }),
                     })
                     toast
