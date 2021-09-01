@@ -80,6 +80,7 @@ const EditPage: NextPage = () => {
           style={style}
           options={options}
           toggleSidebar={toggleSidebar}
+          workspace={form.workspace}
           onPublish={() => {
             const request = fetch(`/api/forms/${id}/update`, {
               method: 'PATCH',

@@ -12,22 +12,27 @@ export default withApiAuthRequired(async function handler(
     res.setHeader('Allow', ['PATCH'])
     res.status(405).end(`Method ${req.method} not allowed`)
   }
-
-  const body = JSON.parse(req.body)
-  const request = await fetch(`${INSTANCE}`, {
-    method: 'POST',
-    redirect: 'follow',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Basic ${TOKEN}`,
-    },
-    body: JSON.stringify({
-      operation: 'update',
-      schema: 'typiform',
-      table: 'forms',
-      records: [body],
-    }),
-  })
-  const response = await request.json()
-  res.status(200).json({ id: response.update_hashes[0] })
+  const { id } = req.query
+  try {
+    const body = JSON.parse(req.body)
+    const request = await fetch(`${INSTANCE}`, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${TOKEN}`,
+      },
+      body: JSON.stringify({
+        operation: 'update',
+        schema: 'typiform',
+        table: 'forms',
+        records: [body],
+      }),
+    })
+    const response = await request.json()
+    res.status(200).json({ id: response.update_hashes[0] })
+  } catch (error) {
+    console.log(`Error updating form: ${id} -> ${error}`)
+    res.status(500).end(error)
+  }
 })

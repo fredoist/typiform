@@ -34,11 +34,13 @@ const EditorNavbar = ({
   options,
   toggleSidebar,
   onPublish,
+  workspace,
 }: {
   title: string | null
   icon: string | undefined
   style: formStyle
   options: formOptions
+  workspace?: string
   toggleSidebar: React.Dispatch<React.SetStateAction<boolean>>
   onPublish: React.MouseEventHandler<HTMLButtonElement>
 }) => {
@@ -47,7 +49,6 @@ const EditorNavbar = ({
   const [, setStyle] = useAtom(styleAtom)
   const [, setOptions] = useAtom(optionsAtom)
   const { user } = useUser()
-  const { forms } = useFetchAll(`${user?.sub}`)
 
   return (
     <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">
@@ -143,10 +144,34 @@ const EditorNavbar = ({
                   if (!user) {
                     return toast.error(`Log in to change this setting`)
                   }
-                  setOptions((state) => ({
-                    ...state,
-                    publicResponses: value,
-                  }))
+                  if (id) {
+                    const updateForm = fetch(`/api/forms/${id}/update`, {
+                      method: 'PATCH',
+                      body: JSON.stringify({
+                        id: id,
+                        options: { ...options, publicResponses: value },
+                      }),
+                    })
+                    toast
+                      .promise(updateForm, {
+                        loading: `Updating form`,
+                        success: `Form has been updated`,
+                        error: `Error while updating form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/${id}`).then(() => {
+                          setOptions((state) => ({
+                            ...state,
+                            publicResponses: value,
+                          }))
+                        })
+                      })
+                  } else {
+                    setOptions((state) => ({
+                      ...state,
+                      publicResponses: value,
+                    }))
+                  }
                 }}
               />
               <LabelSwitch
@@ -156,10 +181,34 @@ const EditorNavbar = ({
                   if (!user) {
                     return toast.error(`Log in first to lock form responses`)
                   }
-                  setOptions((state) => ({
-                    ...state,
-                    lockedResponses: value,
-                  }))
+                  if (id) {
+                    const updateForm = fetch(`/api/forms/${id}/update`, {
+                      method: 'PATCH',
+                      body: JSON.stringify({
+                        id: id,
+                        options: { ...options, publicResponses: value },
+                      }),
+                    })
+                    toast
+                      .promise(updateForm, {
+                        loading: `Updating form`,
+                        success: `Form has been updated`,
+                        error: `Error while updating form`,
+                      })
+                      .then(() => {
+                        mutate(`/api/forms/${id}`).then(() => {
+                          setOptions((state) => ({
+                            ...state,
+                            lockedResponses: value,
+                          }))
+                        })
+                      })
+                  } else {
+                    setOptions((state) => ({
+                      ...state,
+                      lockedResponses: value,
+                    }))
+                  }
                 }}
               />
             </div>
@@ -192,6 +241,9 @@ const EditorNavbar = ({
                   onClick={() => {
                     const deleteForm = fetch(`/api/forms/${id}/delete`, {
                       method: 'DELETE',
+                      body: JSON.stringify({
+                        workspace: workspace,
+                      }),
                     })
                     toast
                       .promise(deleteForm, {
@@ -200,8 +252,9 @@ const EditorNavbar = ({
                         error: `Error while deleting form`,
                       })
                       .then(() => {
-                        mutate(`/api/forms/user/${user?.sub}`)
-                        router.push(`/${forms[0].id}/edit`)
+                        mutate(`/api/forms/user/${user?.sub}`).then(() => {
+                          router.push(`/create`)
+                        })
                       })
                   }}
                 >
