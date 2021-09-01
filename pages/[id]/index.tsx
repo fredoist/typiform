@@ -16,7 +16,8 @@ import { LabelSwitch } from 'components/editor/LabelSwitch'
 import { mutate } from 'swr'
 import toast from 'react-hot-toast'
 import { OverlayPage } from 'components/common/OverlayPage'
-import { Layout } from 'components/Layout'
+import { Layout } from 'components/editor/Layout'
+import { SEO } from 'components/common/SEO'
 
 const FormDashboard: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -51,17 +52,20 @@ const FormDashboard: NextPage = () => {
     (!form.options.publicResponses && !user)
   ) {
     return (
-      <Layout title="Not Allowed">
-        <OverlayPage
-          title="Not Allowed"
-          description="You can't access this page"
-        />
-      </Layout>
+      <OverlayPage
+        title="Not Allowed"
+        description="You can't access this page"
+      />
     )
   }
 
   return (
-    <Layout title={form.title} icon={form.header.icon} className="flex">
+    <Layout>
+      <SEO
+        title={
+          form.title ? `Dashboard: ${form.title}` : 'Dashboard: Untitled form'
+        }
+      />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <nav className="sticky top-0 inset-x-0 z-50 flex items-center gap-2 p-2 bg-white cursor-default text-sm">

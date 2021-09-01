@@ -20,7 +20,8 @@ import {
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { mutate } from 'swr'
 import { OverlayPage } from 'components/common/OverlayPage'
-import { Layout } from 'components/Layout'
+import { Layout } from 'components/editor/Layout'
+import { SEO } from 'components/common/SEO'
 
 const EditPage: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -71,7 +72,8 @@ const EditPage: NextPage = () => {
   }
 
   return (
-    <Layout title={title} icon={header.icon} className="flex">
+    <Layout>
+      <SEO title={title ? title : 'Untitled form'} />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
