@@ -45,7 +45,6 @@ const ViewFormPage: NextPage = () => {
               <Image
                 alt="Cover"
                 src={form.header.cover}
-                unoptimized={true}
                 layout="fill"
                 objectFit="cover"
                 objectPosition="center"
@@ -72,7 +71,6 @@ const ViewFormPage: NextPage = () => {
                 <Image
                   src={form.header.icon}
                   alt="Icon"
-                  unoptimized={true}
                   width={128}
                   height={128}
                 />
