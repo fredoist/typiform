@@ -65,7 +65,7 @@ const EditorNavbar = ({
         />
       )}
       <span className="flex-1 truncate">{title}</span>
-      <Popover className="lg:relative">
+      <Popover className="lg:relative z-20">
         <Popover.Button className="btn">
           <span className="sr-only">Toggle form options</span>
           <DotsHorizontalIcon className="icon" />
@@ -79,7 +79,7 @@ const EditorNavbar = ({
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <Popover.Panel className="absolute right-2 translate-y-2 w-60 max-h-[calc(100vh-50px)] overflow-y-auto bg-white shadow-lg ring-1 ring-black/5 rounded divide-y divide-gray-100">
+          <Popover.Panel className="absolute right-2 translate-y-2 w-60 max-h-[calc(100vh-50px)] overflow-y-auto bg-white shadow-lg ring-1 ring-black/5 rounded divide-y divide-gray-100 z-50">
             <RadioGroup
               value={style.fontStyle}
               onChange={(value) => {

@@ -74,7 +74,7 @@ const EditorHeader = ({
             )}
           </div>
           <Popover
-            className={cx('relative mx-auto z-50', {
+            className={cx('relative mx-auto z-30', {
               'max-w-5xl': style.fullWidth,
               'max-w-xl': !style.fullWidth,
             })}
@@ -312,7 +312,7 @@ const EditorHeader = ({
           className={cx({ 'h-8 md:h-12 lg:h-16': header.cover && header.icon })}
         >
           {header.icon && (
-            <Popover className="relative z-50">
+            <Popover className="relative z-20">
               <Popover.Button
                 className={cx(
                   'w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded hover:ring-8 hover:ring-black/10 overflow-hidden',
