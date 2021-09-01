@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import cx from 'classnames'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { Popover, RadioGroup, Transition } from '@headlessui/react'
 import { useUser } from '@auth0/nextjs-auth0'
 import {
@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/outline'
 
 import { optionsAtom, styleAtom } from 'lib/atoms/form'
-import { LabelSwitch } from 'components/LabelSwitch'
+import { LabelSwitch } from 'components/Editor/LabelSwitch'
 import { formOptions, formStyle } from 'lib/types/form'
 import { mutate } from 'swr'
 import { useFetchAll } from 'lib/hooks/useFetchAll'
@@ -65,8 +65,7 @@ const EditorNavbar = ({
         />
       )}
       <span className="flex-1 truncate">{title}</span>
-      <Toaster position="top-center" reverseOrder={false} />
-      <Popover className="lg:relative">
+      <Popover className="lg:relative z-20">
         <Popover.Button className="btn">
           <span className="sr-only">Toggle form options</span>
           <DotsHorizontalIcon className="icon" />
@@ -80,7 +79,7 @@ const EditorNavbar = ({
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <Popover.Panel className="absolute right-2 translate-y-2 w-60 max-h-[calc(100vh-50px)] overflow-y-auto bg-white shadow-lg ring-1 ring-black/5 rounded divide-y divide-gray-100">
+          <Popover.Panel className="absolute right-2 translate-y-2 w-60 max-h-[calc(100vh-50px)] overflow-y-auto bg-white shadow-lg ring-1 ring-black/5 rounded divide-y divide-gray-100 z-50">
             <RadioGroup
               value={style.fontStyle}
               onChange={(value) => {
@@ -136,6 +135,19 @@ const EditorNavbar = ({
               />
             </div>
             <div className="py-2">
+              <LabelSwitch
+                label="Public responses"
+                checked={!user ? true : options.publicResponses}
+                onChange={(value) => {
+                  if (!user) {
+                    return toast.error(`Log in to change this setting`)
+                  }
+                  setOptions((state) => ({
+                    ...state,
+                    lockedResponses: value,
+                  }))
+                }}
+              />
               <LabelSwitch
                 label="Lock responses"
                 checked={!user ? false : options.lockedResponses}

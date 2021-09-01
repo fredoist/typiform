@@ -1,13 +1,16 @@
-import { OverlayPage } from 'components/OverlayPage'
 import * as React from 'react'
 import { NextPage } from 'next'
+import { OverlayPage } from 'components/OverlayPage'
+import { Layout } from 'components/Layout'
 
 const ThankYouPage: NextPage = () => {
   return (
-    <OverlayPage
-      title="Thank you!"
-      description="Your responses have been successfully submitted"
-    />
+    <Layout title="Thank you">
+      <OverlayPage
+        title="Thank you!"
+        description="Your responses have been successfully submitted"
+      />
+    </Layout>
   )
 }
 
