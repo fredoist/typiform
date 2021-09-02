@@ -227,10 +227,10 @@ const EditableBlock = ({
                   const i = next.findIndex((e) => e.id === block.id)
                   next[i] = {
                     ...block,
-                    value: content ? sanitize(content) : 'Untitled question',
+                    value: content ? `${content}` : 'Untitled question',
                   }
                   return next
-                })
+              ?  })
               }
             } else {
               setShowPlaceholder(true)
