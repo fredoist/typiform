@@ -41,7 +41,7 @@ const IndexPage: NextPage = () => {
           <h1 className="font-bold text-3xl leading-none mb-4">
             Easy form builder that works like a doc
           </h1>
-          <p className="text-gray-700 py-2">
+          <p className="text-gray-700 py-2 mb-5">
             Seamlessly create online forms for all purposes and collect data
             without knowing how to code
           </p>
