@@ -7,8 +7,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST'])
+  if (req.method !== 'PATCH') {
+    res.setHeader('Allow', ['PATCH'])
     res.status(405).end(`Method ${req.method} not allowed`)
   }
   try {
@@ -21,14 +21,14 @@ export default async function handler(
         Authorization: `Basic ${TOKEN}`,
       },
       body: JSON.stringify({
-        operation: 'insert',
+        operation: 'upsert',
         schema: 'typiform',
         table: 'forms',
         records: [body],
       }),
     })
     const response = await request.json()
-    res.status(200).json({ id: response.inserted_hashes[0] })
+    res.status(200).json({ id: response.upserted_hashes[0] })
   } catch (error) {
     console.log(`Error creating form -> ${error}`)
     res.status(500).end(error)

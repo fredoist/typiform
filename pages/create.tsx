@@ -52,33 +52,6 @@ const CreatePage: NextPage = () => {
           style={style}
           options={options}
           toggleSidebar={toggleSidebar}
-          onPublish={() => {
-            const request = fetch(`/api/forms`, {
-              method: 'POST',
-              body: JSON.stringify({
-                title: title,
-                workspace: user?.sub,
-                style: style,
-                header: header,
-                options: !user
-                  ? { publicResponses: true, lockedResponses: false }
-                  : options,
-                blocks: blocks,
-              }),
-            })
-            toast
-              .promise(request, {
-                loading: `Wait, we're publishing your form`,
-                success: 'Redirecting to form view',
-                error: 'Error creating form',
-              })
-              .then((res) => res.json())
-              .then(({ id }) => {
-                router.push(`/${id}`)
-                mutate(`/api/forms/${id}`)
-                if (user) mutate(`/api/forms/${user?.sub}`)
-              })
-          }}
         />
         <EditorHeader header={header} style={style} />
         <EditablePage title={title} blocks={blocks} style={style} />

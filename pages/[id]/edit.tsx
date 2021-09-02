@@ -83,33 +83,6 @@ const EditPage: NextPage = () => {
           options={options}
           toggleSidebar={toggleSidebar}
           workspace={form.workspace}
-          onPublish={() => {
-            const request = fetch(`/api/forms/${id}/update`, {
-              method: 'PATCH',
-              body: JSON.stringify({
-                id: id,
-                title: title,
-                workspace: user?.sub,
-                style: style,
-                header: header,
-                options: !user
-                  ? { publicResponses: true, lockedResponses: false }
-                  : options,
-                blocks: blocks,
-              }),
-            })
-            toast
-              .promise(request, {
-                loading: `Wait, we're publishing your form`,
-                success: 'Changes were published',
-                error: 'Error updating form',
-              })
-              .then((res) => res.json())
-              .then(({ id }) => {
-                mutate(`/api/forms/${id}`)
-                mutate(`/api/forms/user/${user?.sub}`)
-              })
-          }}
         />
         <EditorHeader header={header} style={style} />
         <EditablePage title={title} blocks={blocks} style={style} />
