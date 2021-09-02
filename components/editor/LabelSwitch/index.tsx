@@ -15,12 +15,10 @@ const LabelSwitch = ({
     <Switch
       checked={checked}
       onChange={onChange}
-      className={cx(
-        'relative w-8 h-5 bg-gray-400 rounded-full transition-colors',
-        {
-          'bg-blue-400': checked,
-        }
-      )}
+      className={cx('relative w-8 h-5 rounded-full transition-colors', {
+        'bg-blue-400': checked,
+        'bg-gray-400': !checked,
+      })}
     >
       <span className="sr-only">Toggle {label} value</span>
       <span
