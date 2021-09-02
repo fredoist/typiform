@@ -130,7 +130,7 @@ const ViewFormPage: NextPage = () => {
                         ...register(
                           `${
                             block.value
-                              ? sanitize(block.value)
+                              ? `${sanitize(block.value).toString()}`
                               : 'Untitled question'
                           }`,
                           {

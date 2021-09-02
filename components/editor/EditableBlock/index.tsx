@@ -227,7 +227,9 @@ const EditableBlock = ({
                   const i = next.findIndex((e) => e.id === block.id)
                   next[i] = {
                     ...block,
-                    value: content ? sanitize(content) : 'Untitled question',
+                    value: content
+                      ? `${content.toString()}`
+                      : 'Untitled element',
                   }
                   return next
                 })
@@ -240,7 +242,7 @@ const EditableBlock = ({
                 const i = next.findIndex((e) => e.id === block.id)
                 next[i] = {
                   ...block,
-                  value: null,
+                  value: 'Untitled element',
                 }
                 return next
               })
