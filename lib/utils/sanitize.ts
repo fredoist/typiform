@@ -6,9 +6,9 @@ function sanitize(string: string) {
     '"': '&quot;',
     "'": '&#x27;',
     '/': '&#x2F;',
-    '.': '\\.',
+    '.': '\\\\.',
   }
-  const reg = /[&<>"'/.]/gi
+  const reg = /[&<>"'/\.]/gi
   return string.replace(reg, (match: string) => map[match])
 }
 
