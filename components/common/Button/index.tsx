@@ -1,12 +1,10 @@
 import * as React from 'react'
 import cx from 'classnames'
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'disabled' | 'default'
   size: 'xs' | 'sm' | 'md' | 'lg'
   children: React.ReactNode
-  onClick?: (e: React.MouseEvent) => void
-  props?: React.HTMLAttributes<HTMLButtonElement>
 }
 
 const Button = ({
