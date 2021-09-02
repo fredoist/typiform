@@ -204,12 +204,9 @@ const Sidebar = ({ show }: { show: boolean }) => {
                                       success: `Form has been deleted`,
                                       error: `Error while deleting form`,
                                     })
-                                    .then(() => {
-                                      mutate(`/api/forms/${user.sub}`).then(
-                                        () => {
-                                          router.push(`/create`)
-                                        }
-                                      )
+                                    .then(async () => {
+                                      await mutate(`/api/forms/${user.sub}`)
+                                      router.push(`/create`)
                                     })
                                 }}
                               >
