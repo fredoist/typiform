@@ -6,9 +6,9 @@ import { atomWithStorage } from 'jotai/utils'
 import toast from 'react-hot-toast'
 import { useUser } from '@auth0/nextjs-auth0'
 
-import { EditorNavbar } from 'components/Editor/EditorNavbar'
-import { EditorHeader } from 'components/Editor/EditorHeader'
-import { EditablePage } from 'components/Editor/EditablePage'
+import { EditorNavbar } from 'components/editor/EditorNavbar'
+import { EditorHeader } from 'components/editor/EditorHeader'
+import { EditablePage } from 'components/editor/EditablePage'
 import {
   blocksAtom,
   headerAtom,
@@ -16,9 +16,10 @@ import {
   styleAtom,
   titleAtom,
 } from 'lib/atoms/form'
-import { Sidebar } from 'components/Sidebar'
+import { Sidebar } from 'components/editor/Sidebar'
 import { mutate } from 'swr'
-import { Layout } from 'components/Layout'
+import { Layout } from 'components/editor/Layout'
+import { SEO } from 'components/common/SEO'
 
 export const sidebarAtom = atomWithStorage('showSidebar', false)
 
@@ -41,7 +42,8 @@ const CreatePage: NextPage = () => {
   }, [setTitle, setHeader, setStyle, setOptions, setBlocks])
 
   return (
-    <Layout title={title} icon={header.icon} className="flex">
+    <Layout>
+      <SEO title={title ? title : 'Create a form'} />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
@@ -50,33 +52,6 @@ const CreatePage: NextPage = () => {
           style={style}
           options={options}
           toggleSidebar={toggleSidebar}
-          onPublish={() => {
-            const request = fetch(`/api/forms`, {
-              method: 'POST',
-              body: JSON.stringify({
-                title: title,
-                workspace: user?.sub,
-                style: style,
-                header: header,
-                options: !user
-                  ? { publicResponses: true, lockedResponses: false }
-                  : options,
-                blocks: blocks,
-              }),
-            })
-            toast
-              .promise(request, {
-                loading: `Wait, we're publishing your form`,
-                success: 'Redirecting to form view',
-                error: 'Error creating form',
-              })
-              .then((res) => res.json())
-              .then(({ id }) => {
-                router.push(`/${id}`)
-                mutate(`/api/forms/${id}`)
-                if (user) mutate(`/api/forms/${user?.sub}`)
-              })
-          }}
         />
         <EditorHeader header={header} style={style} />
         <EditablePage title={title} blocks={blocks} style={style} />

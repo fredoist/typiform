@@ -19,7 +19,7 @@ import {
 } from '@heroicons/react/outline'
 
 import { useFetchAll } from 'lib/hooks/useFetchAll'
-import { Logo } from 'components/Logo'
+import { Logo } from 'components/common/Logo'
 
 const Sidebar = ({ show }: { show: boolean }) => {
   const { user, isLoading, error } = useUser()
@@ -204,12 +204,9 @@ const Sidebar = ({ show }: { show: boolean }) => {
                                       success: `Form has been deleted`,
                                       error: `Error while deleting form`,
                                     })
-                                    .then(() => {
-                                      mutate(`/api/forms/${user.sub}`).then(
-                                        () => {
-                                          router.push(`/create`)
-                                        }
-                                      )
+                                    .then(async () => {
+                                      await mutate(`/api/forms/${user.sub}`)
+                                      router.push(`/create`)
                                     })
                                 }}
                               >

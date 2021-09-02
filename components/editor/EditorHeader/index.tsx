@@ -12,8 +12,8 @@ import {
   SparklesIcon,
 } from '@heroicons/react/outline'
 
-import { UploadBox } from 'components/Editor/UploadBox'
-import { UploadLinkForm } from 'components/Editor/UploadLinkForm'
+import { UploadBox } from 'components/editor/UploadBox'
+import { UploadLinkForm } from 'components/editor/UploadLinkForm'
 import { headerAtom } from 'lib/atoms/form'
 import { formHeader, formStyle } from 'lib/types/form'
 

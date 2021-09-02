@@ -15,8 +15,8 @@ import {
   TrashIcon,
 } from '@heroicons/react/outline'
 
-import { optionsAtom, styleAtom } from 'lib/atoms/form'
-import { LabelSwitch } from 'components/Editor/LabelSwitch'
+import { blocksAtom, headerAtom, optionsAtom, styleAtom } from 'lib/atoms/form'
+import { LabelSwitch } from 'components/editor/LabelSwitch'
 import { formOptions, formStyle } from 'lib/types/form'
 import { mutate } from 'swr'
 import { useFetchAll } from 'lib/hooks/useFetchAll'
@@ -33,7 +33,6 @@ const EditorNavbar = ({
   style,
   options,
   toggleSidebar,
-  onPublish,
   workspace,
 }: {
   title: string | null
@@ -42,12 +41,13 @@ const EditorNavbar = ({
   options: formOptions
   workspace?: string
   toggleSidebar: React.Dispatch<React.SetStateAction<boolean>>
-  onPublish: React.MouseEventHandler<HTMLButtonElement>
 }) => {
   const router = useRouter()
   const { id } = router.query
   const [, setStyle] = useAtom(styleAtom)
   const [, setOptions] = useAtom(optionsAtom)
+  const [header] = useAtom(headerAtom)
+  const [blocks] = useAtom(blocksAtom)
   const { user } = useUser()
 
   return (
@@ -266,7 +266,37 @@ const EditorNavbar = ({
           </Popover.Panel>
         </Transition>
       </Popover>
-      <button className="btn btn-primary" onClick={onPublish}>
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          const request = fetch(`/api/forms`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              id: id ? id : null,
+              title: title,
+              workspace: user?.sub,
+              style: style,
+              header: header,
+              options: !user
+                ? { publicResponses: true, lockedResponses: false }
+                : options,
+              blocks: blocks,
+            }),
+          })
+          toast
+            .promise(request, {
+              loading: `Wait, we're publishing your form`,
+              success: 'Changes were published',
+              error: 'Error updating form',
+            })
+            .then((res) => res.json())
+            .then(async ({ id }) => {
+              await mutate(`/api/forms/${id}`)
+              await mutate(`/api/forms/user/${user?.sub}`)
+              router.push(`/${id}`)
+            })
+        }}
+      >
         <span>Publish</span>
         <ArrowRightIcon className="icon" />
       </button>

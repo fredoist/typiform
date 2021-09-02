@@ -8,10 +8,11 @@ import { useForm } from 'react-hook-form'
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { formBlock } from 'lib/types/form'
 import { ArrowRightIcon } from '@heroicons/react/outline'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { sanitize } from 'lib/utils/sanitize'
-import { OverlayPage } from 'components/OverlayPage'
-import { Layout } from 'components/Layout'
+import { OverlayPage } from 'components/common/OverlayPage'
+import { Layout } from 'components/editor/Layout'
+import { SEO } from 'components/common/SEO'
 
 const ViewFormPage: NextPage = () => {
   const router = useRouter()
@@ -37,7 +38,8 @@ const ViewFormPage: NextPage = () => {
   }
 
   return (
-    <Layout title={form.title} icon={form.header.icon}>
+    <Layout>
+      <SEO title={form.title ? form.title : 'Untitled form'} />
       <section className="w-screen h-screen overflow-y-auto">
         <header className="relative">
           {form.header.cover && (

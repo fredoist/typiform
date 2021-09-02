@@ -5,10 +5,10 @@ import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import { useUser } from '@auth0/nextjs-auth0'
 
-import { Sidebar } from 'components/Sidebar'
-import { EditorNavbar } from 'components/Editor/EditorNavbar'
-import { EditorHeader } from 'components/Editor/EditorHeader'
-import { EditablePage } from 'components/Editor/EditablePage'
+import { Sidebar } from 'components/editor/Sidebar'
+import { EditorNavbar } from 'components/editor/EditorNavbar'
+import { EditorHeader } from 'components/editor/EditorHeader'
+import { EditablePage } from 'components/editor/EditablePage'
 import { sidebarAtom } from 'pages/create'
 import {
   blocksAtom,
@@ -19,8 +19,9 @@ import {
 } from 'lib/atoms/form'
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { mutate } from 'swr'
-import { OverlayPage } from 'components/OverlayPage'
-import { Layout } from 'components/Layout'
+import { OverlayPage } from 'components/common/OverlayPage'
+import { Layout } from 'components/editor/Layout'
+import { SEO } from 'components/common/SEO'
 
 const EditPage: NextPage = () => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
@@ -71,7 +72,8 @@ const EditPage: NextPage = () => {
   }
 
   return (
-    <Layout title={title} icon={header.icon} className="flex">
+    <Layout>
+      <SEO title={title ? title : 'Untitled form'} />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
@@ -81,33 +83,6 @@ const EditPage: NextPage = () => {
           options={options}
           toggleSidebar={toggleSidebar}
           workspace={form.workspace}
-          onPublish={() => {
-            const request = fetch(`/api/forms/${id}/update`, {
-              method: 'PATCH',
-              body: JSON.stringify({
-                id: id,
-                title: title,
-                workspace: user?.sub,
-                style: style,
-                header: header,
-                options: !user
-                  ? { publicResponses: true, lockedResponses: false }
-                  : options,
-                blocks: blocks,
-              }),
-            })
-            toast
-              .promise(request, {
-                loading: `Wait, we're publishing your form`,
-                success: 'Changes were published',
-                error: 'Error updating form',
-              })
-              .then((res) => res.json())
-              .then(({ id }) => {
-                mutate(`/api/forms/${id}`)
-                mutate(`/api/forms/user/${user?.sub}`)
-              })
-          }}
         />
         <EditorHeader header={header} style={style} />
         <EditablePage title={title} blocks={blocks} style={style} />

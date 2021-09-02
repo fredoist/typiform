@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { NextPage } from 'next'
-import { OverlayPage } from 'components/OverlayPage'
+import { OverlayPage } from 'components/common/OverlayPage'
 import { Layout } from 'components/Layout'
 
 const ThankYouPage: NextPage = () => {
