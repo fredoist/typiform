@@ -230,7 +230,7 @@ const EditableBlock = ({
                     value: content ? `${sanitize(content)}` : 'Untitled question',
                   }
                   return next
-              ?  })
+                })
               }
             } else {
               setShowPlaceholder(true)
