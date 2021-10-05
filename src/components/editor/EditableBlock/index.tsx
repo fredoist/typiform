@@ -14,7 +14,6 @@ import { blocksAtom } from 'lib/atoms/form'
 import blockTypes from 'lib/blocks.json'
 import { formBlock } from 'lib/types/form'
 import { useBlocks } from 'lib/hooks/useBlocks'
-import { sanitize } from 'lib/utils/sanitize'
 
 const EditableBlock = ({
   setIsCommand,
