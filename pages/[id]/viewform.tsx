@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import cx from 'classnames'
@@ -14,32 +14,17 @@ import { OverlayPage } from 'components/common/OverlayPage'
 import { Layout } from 'components/editor/Layout'
 import { SEO } from 'components/common/SEO'
 
-const ViewFormPage: NextPage = () => {
+const ViewFormPage: NextPage<{ form: any }> = ({ form }) => {
   const router = useRouter()
   const { id } = router.query
-  const { form, formError, isLoadingForm } = useFormFetch(`${id}`)
   const { register, handleSubmit } = useForm()
-
-  if (isLoadingForm) {
-    return (
-      <OverlayPage
-        title="Loading"
-        description="We're fetching this form data"
-      />
-    )
-  }
-  if (formError) {
-    return (
-      <OverlayPage
-        title="Error"
-        description="Something went wrong while fetching form data"
-      />
-    )
-  }
 
   return (
     <Layout>
-      <SEO title={form.title ? form.title : 'Untitled form'} />
+      <SEO
+        title={form.title ? form.title : 'Untitled form'}
+        icon={form.header.icon}
+      />
       <section className="w-screen h-screen overflow-y-auto">
         <header className="relative">
           {form.header.cover && (
@@ -164,6 +149,34 @@ const ViewFormPage: NextPage = () => {
       </a>
     </Layout>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const request = await fetch(`${process.env.HARPERDB_URL}`, {
+    method: 'POST',
+    redirect: 'follow',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${process.env.HARPERDB_TOKEN}`,
+    },
+    body: JSON.stringify({
+      operation: 'sql',
+      sql: `SELECT * FROM typiform.forms WHERE id='${query.id}'`,
+    }),
+  })
+  const response = await request.json()
+
+  if (response.length <= 0) {
+    return {
+      notFound: true,
+    }
+  }
+
+  return {
+    props: {
+      form: response[0],
+    },
+  }
 }
 
 export default ViewFormPage

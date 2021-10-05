@@ -1,8 +1,11 @@
-import { NextPage } from 'next'
+import {
+  NextApiRequest,
+  NextApiResponse,
+  NextPage,
+} from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Image from 'next/image'
-import { useUser } from '@auth0/nextjs-auth0'
+import { getSession } from '@auth0/nextjs-auth0'
 import {
   AnnotationIcon,
   ArrowRightIcon,
@@ -16,13 +19,6 @@ import { Layout } from 'components/Layout'
 import { Button } from 'components/common/Button'
 
 const IndexPage: NextPage = () => {
-  const router = useRouter()
-  const { user } = useUser()
-
-  if (user) {
-    router.push(`/create`)
-  }
-
   return (
     <Layout
       title="Simple online form builder that works like a doc - Typiform"
@@ -90,6 +86,28 @@ const IndexPage: NextPage = () => {
       </div>
     </Layout>
   )
+}
+
+export const getServerSideProps = ({
+  req,
+  res,
+}: {
+  req: NextApiRequest
+  res: NextApiResponse
+}) => {
+  const session = getSession(req, res)
+  const user = session && session.user
+
+  // if user object is defined redirect to editor page
+  if (user) {
+    return {
+      redirect: { destination: '/create', permanent: false },
+    }
+  }
+
+  return {
+    props: {},
+  }
 }
 
 export default IndexPage
