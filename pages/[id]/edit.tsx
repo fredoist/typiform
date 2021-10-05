@@ -1,9 +1,7 @@
 import * as React from 'react'
-import { NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import { useAtom } from 'jotai'
-import { useRouter } from 'next/router'
-import toast from 'react-hot-toast'
-import { useUser } from '@auth0/nextjs-auth0'
+import { getSession } from '@auth0/nextjs-auth0'
 
 import { Sidebar } from 'components/editor/Sidebar'
 import { EditorNavbar } from 'components/editor/EditorNavbar'
@@ -17,23 +15,22 @@ import {
   styleAtom,
   titleAtom,
 } from 'lib/atoms/form'
-import { useFormFetch } from 'lib/hooks/useFormFetch'
-import { mutate } from 'swr'
-import { OverlayPage } from 'components/common/OverlayPage'
 import { Layout } from 'components/editor/Layout'
 import { SEO } from 'components/common/SEO'
+import { OverlayPage } from 'components/common/OverlayPage'
 
-const EditPage: NextPage = () => {
+interface PageProps {
+  form: any // TODO: Add form response types
+  notAllowed: boolean
+}
+
+const EditPage: NextPage<PageProps> = ({ form, notAllowed }) => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
   const [title, setTitle] = useAtom(titleAtom)
   const [header, setHeader] = useAtom(headerAtom)
   const [style, setStyle] = useAtom(styleAtom)
   const [options, setOptions] = useAtom(optionsAtom)
   const [blocks, setBlocks] = useAtom(blocksAtom)
-  const router = useRouter()
-  const { id } = router.query
-  const { form, isLoadingForm, formError } = useFormFetch(`${id}`)
-  const { user, error, isLoading } = useUser()
 
   React.useEffect(() => {
     if (form) {
@@ -45,28 +42,11 @@ const EditPage: NextPage = () => {
     }
   }, [form, setTitle, setHeader, setStyle, setOptions, setBlocks])
 
-  if (isLoading || isLoadingForm) {
+  if (notAllowed) {
     return (
       <OverlayPage
-        title="Loading"
-        description="We're fethcing this form data"
-      />
-    )
-  }
-  if (error || formError) {
-    return (
-      <OverlayPage
-        title="Error"
-        description="Something went wrong while fetching form data"
-      />
-    )
-  }
-
-  if (form.workspace !== user?.sub) {
-    return (
-      <OverlayPage
-        title="Unautorized"
-        description="You don't have permission to edit this form"
+        title="Not Allowed"
+        description="You can't access this page"
       />
     )
   }
@@ -89,6 +69,54 @@ const EditPage: NextPage = () => {
       </section>
     </Layout>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  query,
+}) => {
+  const session = getSession(req, res)
+  const user = session && session.user
+
+  if (!user) {
+    return {
+      redirect: {
+        destination: `/api/auth/login?returnTo=/${query.id}/edit`,
+        permanent: false,
+      },
+    }
+  }
+
+  const formReq = await fetch(`${process.env.HARPERDB_URL}`, {
+    method: 'POST',
+    redirect: 'follow',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${process.env.HARPERDB_TOKEN}`,
+    },
+    body: JSON.stringify({
+      operation: 'sql',
+      sql: `SELECT * FROM typiform.forms WHERE id='${query.id}'`,
+    }),
+  })
+  const formRes = await formReq.json()
+  const form = formRes[0]
+
+  // formRes returns an empty array if no form is found on DB
+  if(formRes <= 0) {
+    return {
+      notFound: true
+    }
+  }
+
+  return {
+    props: {
+      user,
+      form: form,
+      notAllowed: form.workspace !== user.sub,
+    },
+  }
 }
 
 export default EditPage

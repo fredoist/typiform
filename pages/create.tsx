@@ -1,10 +1,7 @@
 import * as React from 'react'
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
-import toast from 'react-hot-toast'
-import { useUser } from '@auth0/nextjs-auth0'
 
 import { EditorNavbar } from 'components/editor/EditorNavbar'
 import { EditorHeader } from 'components/editor/EditorHeader'
@@ -17,7 +14,6 @@ import {
   titleAtom,
 } from 'lib/atoms/form'
 import { Sidebar } from 'components/editor/Sidebar'
-import { mutate } from 'swr'
 import { Layout } from 'components/editor/Layout'
 import { SEO } from 'components/common/SEO'
 
@@ -30,8 +26,6 @@ const CreatePage: NextPage = () => {
   const [style, setStyle] = useAtom(styleAtom)
   const [options, setOptions] = useAtom(optionsAtom)
   const [blocks, setBlocks] = useAtom(blocksAtom)
-  const { user } = useUser()
-  const router = useRouter()
 
   React.useEffect(() => {
     setTitle(null)

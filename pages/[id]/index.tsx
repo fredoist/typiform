@@ -1,10 +1,10 @@
-import { NextPage } from 'next'
 import * as React from 'react'
+import { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import cx from 'classnames'
 import { Sidebar } from 'components/editor/Sidebar'
-import { useUser } from '@auth0/nextjs-auth0'
+import { getSession, UserProfile, useUser } from '@auth0/nextjs-auth0'
 import { useFormFetch } from 'lib/hooks/useFormFetch'
 import { useRouter } from 'next/router'
 import { useAtom } from 'jotai'
@@ -19,38 +19,19 @@ import { OverlayPage } from 'components/common/OverlayPage'
 import { Layout } from 'components/editor/Layout'
 import { SEO } from 'components/common/SEO'
 
-const FormDashboard: NextPage = () => {
+interface PageProps {
+  user: UserProfile
+  form: any
+  responses: any
+  notAllowed: boolean
+}
+
+const FormDashboard: NextPage<PageProps> = ({ user, form, responses, notAllowed }) => {
   const [showSidebar, toggleSidebar] = useAtom(sidebarAtom)
   const router = useRouter()
   const { id } = router.query
-  const { responses, responsesError, isLoadingResponses } = useResponses(
-    `${id}`
-  )
-  const { form, formError, isLoadingForm } = useFormFetch(`${id}`)
-  const { user, error, isLoading } = useUser()
 
-  if (isLoadingResponses || isLoadingForm || isLoading) {
-    return (
-      <OverlayPage
-        title="Loading"
-        description="We're fetching this form data"
-      />
-    )
-  }
-  if (formError || responsesError || error) {
-    console.error(formError || responsesError || error)
-    return (
-      <OverlayPage
-        title="Error"
-        description="Something went wrong while fetching form data"
-      />
-    )
-  }
-
-  if (
-    (!form.options.publicResponses && form.workspace !== user?.sub) ||
-    (!form.options.publicResponses && !user)
-  ) {
+  if (notAllowed) {
     return (
       <OverlayPage
         title="Not Allowed"
@@ -187,7 +168,7 @@ const FormDashboard: NextPage = () => {
                   type="text"
                   readOnly={true}
                   className="p-2 focus:outline-none bg-gray-100 rounded w-full"
-                  value={`https://${window.location.host}/${id}/viewform`}
+                  value={`https://typiform.vercel.app/${id}/viewform`}
                   onClick={(e) => {
                     const target = e.target as HTMLInputElement
                     target.select()
@@ -204,7 +185,7 @@ const FormDashboard: NextPage = () => {
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
                     form.title
                   )}&url=${encodeURIComponent(
-                    `https://${window.location.host}/${id}/viewform`
+                    `https://typiform.vercel.app/${id}/viewform`
                   )}`}
                   className="bg-blue-400 text-white btn py-3 px-4 hover:bg-blue-500 gap-4"
                 >
@@ -308,6 +289,65 @@ const FormDashboard: NextPage = () => {
       </section>
     </Layout>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  res,
+  query,
+}) => {
+  const session = getSession(req, res)
+  const user = session && session.user
+
+  const formReq = await fetch(`${process.env.HARPERDB_URL}`, {
+    method: 'POST',
+    redirect: 'follow',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${process.env.HARPERDB_TOKEN}`,
+    },
+    body: JSON.stringify({
+      operation: 'sql',
+      sql: `SELECT * FROM typiform.forms WHERE id='${query.id}'`,
+    }),
+  })
+  const formRes = await formReq.json()
+  const form = formRes[0]
+
+  const responsesReq = await fetch(`${process.env.HARPERDB_URL}`, {
+    method: 'POST',
+    redirect: 'follow',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${process.env.HARPERDB_TOKEN}`,
+    },
+    body: JSON.stringify({
+      operation: 'sql',
+      sql: `SELECT * FROM typiform.responses WHERE formID='${query.id}' ORDER BY __createdtime__ DESC`,
+    }),
+  })
+  const responsesRes = await responsesReq.json()
+  const responses = responsesRes
+
+  // formRes returns an empty array if no form is found on DB
+  if (formRes <= 0) {
+    return {
+      notFound: true,
+    }
+  }
+
+  return {
+    props: {
+      user,
+      form: form,
+      responses: responses,
+      notAllowed:
+        (user &&
+          !form.options.publicResponses &&
+          form.workspace !== user.sub) ||
+        (!form.options.publicResponses && !user),
+    },
+  }
 }
 
 export default FormDashboard
