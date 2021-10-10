@@ -46,6 +46,7 @@ const FormDashboard: NextPage<PageProps> = ({ user, form, responses, notAllowed 
         title={
           form.title ? `Dashboard: ${form.title}` : 'Dashboard: Untitled form'
         }
+        icon={form.header.icon}
       />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">

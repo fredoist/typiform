@@ -60,9 +60,10 @@ const EditorNavbar = ({
         <Image
           src={icon}
           alt="Icon"
-          unoptimized={true}
           width={20}
           height={20}
+          objectFit="cover"
+          objectPosition="center"
           className="rounded-sm overflow-hidden"
         />
       )}
