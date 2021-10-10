@@ -53,7 +53,7 @@ const EditPage: NextPage<PageProps> = ({ form, notAllowed }) => {
 
   return (
     <Layout>
-      <SEO title={title ? title : 'Untitled form'} />
+      <SEO title={title ? title : 'Untitled form'} icon={header.icon} />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
