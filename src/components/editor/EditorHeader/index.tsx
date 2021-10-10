@@ -325,6 +325,8 @@ const EditorHeader = ({
                   <Image
                     src={header.icon}
                     alt="Icon"
+                    objectFit="cover"
+                    objectPosition="center"
                     width={128}
                     height={128}
                   />
