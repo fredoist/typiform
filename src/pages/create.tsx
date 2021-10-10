@@ -37,7 +37,7 @@ const CreatePage: NextPage = () => {
 
   return (
     <Layout>
-      <SEO title={title ? title : 'Create a form'} />
+      <SEO title={title ? title : 'Create a form'} icon={header.icon} />
       <Sidebar show={showSidebar} />
       <section className="w-screen h-screen overflow-y-auto flex-1 shadow-lg ring-1 ring-black/10">
         <EditorNavbar
